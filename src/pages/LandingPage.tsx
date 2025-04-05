@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
 
-const ArcadeLanding: React.FC = () => {
+const VirtualLandingPage: React.FC = () => {
   const [startClicked, setStartClicked] = useState(false);
   const [showCoin, setShowCoin] = useState(false);
 
@@ -73,4 +73,4 @@ const ArcadeLanding: React.FC = () => {
   );
 };
 
-export default ArcadeLanding;
+export default VirtualLandingPage;
