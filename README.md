@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# 🎮 Retro Arcade Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Step into a web-based retro arcade with a twist—this immersive app blends nostalgic gaming aesthetics with modern tech and secret surprises.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🕹️ Concept
 
-### `yarn start`
+The **Retro Arcade Web App** is a dynamic, interactive environment designed to mimic an old-school arcade. Players can explore multiple themed rooms, launch mini-games, and even stumble upon a hidden "Manager's Office" that houses a portfolio—but it's not the main event.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 💡 Key Features
 
-### `yarn test`
+- **Themed Rooms**:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  - 🟣 **Retro Room** – Neon lights, pixel vibes, and classic arcade aesthetics.
+  - 🔵 **Modern Room** – Updated visuals and sleeker game interfaces.
+  - 🔴 **Futuristic Room** – Sci-fi edge and high-tech designs.
 
-### `yarn build`
+- **Game Machines** – Clickable cabinets to launch browser-based mini-games.
+- **Animated Doors** – Transitions between rooms using smooth UI animations.
+- 🔐 **Manager's Door** (Locked) – Hidden behind login, this reveals the developer’s **portfolio** in the form of an office. It's subtle, secret, and just for curious minds or recruiters.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🚧 Project Status
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Currently in **active development**.
 
-### `yarn eject`
+✅ App structure in progress  
+🔄 Game components being built  
+🔐 Login-protected portfolio office underway  
+🎨 Visual theming and arcade UX being refined
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🗺️ Roadmap
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Here’s what’s coming up next:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🎮 Core Features
 
-## Learn More
+- [ ] Add multiple browser-playable mini-games (starting with 2)
+- [ ] Create game-launch UI with retro splash/start screens
+- [ ] Add score system (local first, backend later)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 🧱 Arcade Structure
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [ ] Build animated transitions between rooms using Framer Motion
+- [ ] Create styled arcade machines per room (different themes)
+- [ ] Add visual ambiance (flickering lights, CRT effects, background music)
 
-### Code Splitting
+### 🔐 Portfolio Integration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- [ ] Build login system for unlocking Manager’s Office
+- [ ] Design office layout for portfolio showcase
+- [ ] Display projects, resume, and contact inside the Manager's space
 
-### Analyzing the Bundle Size
+### 📡 Backend & Auth
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- [ ] Set up user authentication (Firebase or custom Node.js)
+- [ ] Store user data like high scores or access flags
+- [ ] Add admin panel for managing content in the future
 
-### Making a Progressive Web App
+### ✨ Bonus & Easter Eggs
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- [ ] Konami code unlock or hidden shortcut
+- [ ] NPC arcade attendant with fun dialogue
+- [ ] "Retro lore" items hidden around rooms
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🧰 Tech Stack
 
-### Deployment
+- **Frontend**: React / Next.js
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Animation**: Framer Motion
+- **Games**: Custom-built or Phaser.js
+- **Auth & Backend (Planned)**: Node.js or Firebase
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `yarn build` fails to minify
+## 🧠 Inspiration & License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This is an original concept and implementation by **Dyllan C. Marais / Azlyum**.
+
+This project may inspire others, but usage or replication must follow license terms.  
+See: [LICENSE.md](./LICENSE.md)
+
+---
+
+## 📬 Contact
+
+Interested in collaboration, feedback, or commercial use?  
+Reach out via the contact form in the “Manager’s Office” or visit:
+
+[https://github.com/Azlyum](https://github.com/Azlyum)
