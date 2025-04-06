@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
 import FakeArcadeScreen from "../components/FakeArcadeScreen.tsx";
+import RetroScene from "./RetroScence.tsx";
 
-const LandingPage: React.FC = () => {
+type LandingPageProps = {
+  onTransitionEnd: () => void;
+};
+
+const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
   const [startClicked, setStartClicked] = useState(false);
   const [showCoin, setShowCoin] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
 
-  const [zoomLevel] = useState(4.5);
+  const [zoomLevel] = useState(5.2);
   const [yOffset] = useState("-20%");
   const [origin] = useState("center 25%");
 
@@ -62,6 +67,11 @@ const LandingPage: React.FC = () => {
             }
             transition={{ duration: 2.5, ease: "easeInOut" }}
             className="relative w-[640px]"
+            onAnimationComplete={() => {
+              if (startClicked) {
+                onTransitionEnd(); // trigger scene change!
+              }
+            }}
           >
             <img
               src="/images/arcade-machine.png"
