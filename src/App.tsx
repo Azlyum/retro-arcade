@@ -2,9 +2,7 @@ import React from "react";
 import "./App.css";
 import { useState } from "react";
 import LandingPage from "./scenes/LandingScene.tsx";
-import RetroScene from "./scenes/RetroScence.tsx";
-// import ArcadeFloor from "./scenes/ArcadeFloor";
-// import ManagersRoom from "./scenes/ManagersRoom";
+import RetroScene from "./scenes/RetroScene.tsx";
 
 export default function App() {
   const [scene, setScene] = useState<"landing" | "arcade">("landing");

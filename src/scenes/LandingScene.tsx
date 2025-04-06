@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
 import FakeArcadeScreen from "../components/FakeArcadeScreen.tsx";
-import RetroScene from "./RetroScence.tsx";
 
 type LandingPageProps = {
   onTransitionEnd: () => void;
