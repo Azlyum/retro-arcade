@@ -3,12 +3,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
 import FakeArcadeScreen from "../components/FakeArcadeScreen.tsx";
 
-const LandingPage: React.FC = () => {
+type LandingPageProps = {
+  onTransitionEnd: () => void;
+};
+
+const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
   const [startClicked, setStartClicked] = useState(false);
   const [showCoin, setShowCoin] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
 
-  const [zoomLevel] = useState(4.5);
+  const [zoomLevel] = useState(5.2);
   const [yOffset] = useState("-20%");
   const [origin] = useState("center 25%");
 
@@ -47,7 +51,7 @@ const LandingPage: React.FC = () => {
       />
 
       <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <div className="w-full h-full border-4 border-cyan-400 rounded-xl shadow-[0_0_30px_rgba(0,255,255,0.8)] p-4 flex items-center justify-center">
+        <div className="w-full h-full border-4 rounded-xl shadow-[0_0_30px_rgba(0,255,255,0.8)] p-4 flex items-center justify-center border-cyan-400">
           <motion.div
             initial={{ scale: 1, transformOrigin: "center center" }}
             animate={
@@ -62,38 +66,41 @@ const LandingPage: React.FC = () => {
             }
             transition={{ duration: 2.5, ease: "easeInOut" }}
             className="relative w-[640px]"
+            onAnimationComplete={() => {
+              if (startClicked) {
+                onTransitionEnd(); // trigger scene change!
+              }
+            }}
           >
             <img
               src="/images/arcade-machine.png"
               alt="Arcade Machine"
               className="w-full rounded-xl z-0 bg-transparent"
             />
-            <div className="absolute top-[26%] left-[20%] w-[60%] h-[16%] z-10">
-              <FakeArcadeScreen />
-            </div>
 
-            <div className="absolute top-[11.5%] left-1/2 -translate-x-1/2 z-10 text-cyan-300 text-xl font-bold font-arcade pointer-events-none">
+            <div className="absolute top-[11.5%] left-1/2 -translate-x-1/2 z-10 text-purple-300 text-shadow-neonPurple text-3xl font-bold font-arcade pointer-events-none animate-pulseNeonPurple">
               GAMING HUB
+            </div>
+            <div className="absolute top-[26%] left-[20%] w-[60%] h-[16%] z-0">
+              <FakeArcadeScreen />
             </div>
 
             {!startClicked && (
               <div
-                className={`absolute top-[32%] left-1/2 -translate-x-1/2 text-center animate-flicker cursor-pointer ${
+                className={`absolute top-[32%] left-1/2 -translate-x-1/2 text-center animate-pulseNeonYellow cursor-pointer ${
                   hasStarted ? "pointer-events-none opacity-50" : ""
                 }`}
                 onClick={handleStart}
               >
-                <p className="text-yellow-300 text-sm font-arcade">
-                  PRESS START
-                </p>
+                <p className="text-yellow-300 font-arcade">PRESS START</p>
 
                 <div
-                  className={`absolute bottom-[-50%] left-[18%] text-center animate-flicker cursor-pointer ${
+                  className={`absolute bottom-[-50%] left-[18%] text-center animate-pulseNeonYellow cursor-pointer ${
                     hasStarted ? "pointer-events-none opacity-50" : ""
                   }`}
                   onClick={handleStart}
                 >
-                  <p className="text-yellow-300 text-xs font-arcade opacity-85">
+                  <p className="text-yellow-300 text-xs font-arcade opacity-65">
                     Insert Coin
                   </p>
                 </div>

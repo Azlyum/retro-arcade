@@ -3,8 +3,8 @@ import React from "react";
 const FakeArcadeScreen: React.FC = () => {
   return (
     <div className="w-full h-full flex items-center justify-center">
-      <div className="relative w-[300px] h-[210px] bg-black border-2 border-green-900 overflow-hidden screen-glow rounded-xl">
-        <div className="absolute top-2 left-3 w-2 h-2 bg-green-300 rounded-full animate-blink"></div>
+      <div className="relative w-[300px] h-[210px] bg-black p-1 border-2 border-orange-900 shadow-neonOrange overflow-hidden rounded-xl">
+        <div className="absolute top-2 left-3 w-2 h-2 bg-green-300 rounded-full animate-blink-neonOrange"></div>
 
         <div className="absolute bottom-2 left-1/2 w-6 h-2 bg-green-500 animate-player"></div>
 
