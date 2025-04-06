@@ -83,7 +83,7 @@ const LandingPage: React.FC = () => {
                 }`}
                 onClick={handleStart}
               >
-                <p className="text-yellow-300 text-s font-arcade">
+                <p className="text-yellow-300 text-sm font-arcade">
                   PRESS START
                 </p>
 
