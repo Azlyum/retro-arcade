@@ -68,7 +68,7 @@ const LandingPage: React.FC = () => {
               alt="Arcade Machine"
               className="w-full rounded-xl z-0 bg-transparent"
             />
-            <div className="absolute top-[26%] left-[20%] w-[60%] h-[16%] z-5">
+            <div className="absolute top-[26%] left-[20%] w-[60%] h-[16%] z-10">
               <FakeArcadeScreen />
             </div>
 
