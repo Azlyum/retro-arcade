@@ -41,12 +41,15 @@ module.exports = {
         screenGlow:
           "0 0 4px #00ffc3, 0 0 10px #00ffc3, inset 0 0 12px rgba(0,255,204,0.1), 0 0 20px rgba(0,255,204,0.3)",
       },
+
       backgroundImage: {
         screenRadial: "radial-gradient(circle at center, #0a0a0a 40%, #000)",
       },
+
       borderColor: {
         screenGlow: "#00ffc3",
       },
+
       textShadow: {
         neonCyan: "0 0 4px #0ff, 0 0 8px #0ff",
         neonPink: "0 0 4px #ff00aa, 0 0 8px #ff00aa",
@@ -57,6 +60,7 @@ module.exports = {
         neonWhite: "0 0 4px #fff, 0 0 8px #fff",
         neonRainbow: "0 0 3px #ff00ff, 0 0 6px #00ffff, 0 0 9px #ffff00",
       },
+
       animation: {
         screenflicker: "screenflicker 4s infinite",
         flicker: "flicker 10s infinite",
@@ -72,6 +76,7 @@ module.exports = {
         pulseNeonRed: "pulseNeonRed 2s ease-in-out infinite",
         pulseRainbow: "pulseRainbow 3s ease-in-out infinite",
       },
+
       keyframes: {
         screenflicker: {
           "0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%": {
@@ -184,6 +189,7 @@ module.exports = {
       },
     },
   },
+
   plugins: [
     function ({ matchUtilities, theme }) {
       matchUtilities(

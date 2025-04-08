@@ -1,18 +1,19 @@
 import React from "react";
 import "./App.css";
-import { useState } from "react";
 import LandingPage from "./scenes/LandingScene.tsx";
 import RetroScene from "./scenes/RetroScene.tsx";
+import { useArcadeStore } from "./store/useArcadeStore.tsx";
 
 export default function App() {
-  const [scene, setScene] = useState<"landing" | "arcade">("landing");
+  // const { currentScene, setScene } = useArcadeStore();
 
-  return (
-    <>
-      {scene === "landing" && (
-        <LandingPage onTransitionEnd={() => setScene("arcade")} />
-      )}
-      {scene === "arcade" && <RetroScene />}
-    </>
-  );
+  // return (
+  //   <>
+  //     {currentScene === "landing" && (
+  //       <LandingPage onTransitionEnd={() => setScene("arcade")} />
+  //     )}
+  //     {currentScene === "arcade" && <RetroScene />}
+  //   </>
+  // );
+  return <RetroScene />;
 }

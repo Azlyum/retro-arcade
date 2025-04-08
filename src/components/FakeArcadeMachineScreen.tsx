@@ -1,6 +1,10 @@
 import React from "react";
 
-const FakeArcadeScreen: React.FC = () => {
+interface FakeArcadeRetroMachineScreenI {
+  className?: string;
+  style?: React.CSSProperties;
+}
+export const FakeArcadeLandingMachineScreen: React.FC = () => {
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="relative w-[300px] h-[210px] bg-black p-1 border-2 border-orange-900 shadow-neonOrange overflow-hidden rounded-xl">
@@ -18,4 +22,23 @@ const FakeArcadeScreen: React.FC = () => {
   );
 };
 
-export default FakeArcadeScreen;
+export const FakeArcadeRetroMachineScreen: React.FC<
+  FakeArcadeRetroMachineScreenI
+> = ({ className, style }) => {
+  return (
+    <div
+      className={`absolute rounded-xl border-2 border-orange-900 shadow-neonOrange bg-black 
+      w-[20vw] h-[30vw] 
+      sm:w-[18vw] sm:h-[28vw] 
+      md:w-[16vw] md:h-[24vw] 
+      lg:w-[14vw] lg:h-[20vw] 
+      xl:w-[12vw] xl:h-[18vw]
+      ${className}`}
+      style={{
+        transform: style?.transform,
+        transformOrigin: style?.transformOrigin,
+        ...style,
+      }}
+    ></div>
+  );
+};
