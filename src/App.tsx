@@ -5,15 +5,14 @@ import RetroScene from "./scenes/RetroScene.tsx";
 import { useArcadeStore } from "./store/useArcadeStore.tsx";
 
 export default function App() {
-  // const { currentScene, setScene } = useArcadeStore();
+  const { currentScene, setScene } = useArcadeStore();
 
-  // return (
-  //   <>
-  //     {currentScene === "landing" && (
-  //       <LandingPage onTransitionEnd={() => setScene("arcade")} />
-  //     )}
-  //     {currentScene === "arcade" && <RetroScene />}
-  //   </>
-  // );
-  return <RetroScene />;
+  return (
+    <>
+      {currentScene === "landing" && (
+        <LandingPage onTransitionEnd={() => setScene("arcade")} />
+      )}
+      {currentScene === "arcade" && <RetroScene />}
+    </>
+  );
 }
