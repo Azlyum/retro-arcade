@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
-import { FakeArcadeLandingMachineScreen } from "../components/FakeArcadeMachineScreen.tsx";
+import { ArcadeLandingMachineScreen } from "../components/ArcadeMachineScreens.tsx";
 import { useArcadeStore } from "../store/useArcadeStore.tsx";
 
 type LandingPageProps = {
@@ -91,7 +91,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
               GAMING HUB
             </div>
             <div className="absolute top-[26%] left-[20%] w-[60%] h-[16%] z-0">
-              <FakeArcadeLandingMachineScreen />
+              <ArcadeLandingMachineScreen />
             </div>
 
             {!startClicked && (

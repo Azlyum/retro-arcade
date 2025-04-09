@@ -1,10 +1,21 @@
 import React from "react";
+import { gameColorVariants } from "../games/GameData.tsx";
 
-interface FakeArcadeRetroMachineScreenI {
+interface ArcadeLandingMachineScreenI {
   className?: string;
   style?: React.CSSProperties;
+  id?: string;
 }
-export const FakeArcadeLandingMachineScreen: React.FC = () => {
+
+interface ArcadeMachineScreensI {
+  className?: string;
+  style?: React.CSSProperties;
+  name?: string;
+  id?: string;
+  onClick?: () => void;
+}
+
+export const ArcadeLandingMachineScreen: React.FC = () => {
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="relative w-[300px] h-[210px] bg-black p-1 border-2 border-orange-900 shadow-neonOrange overflow-hidden rounded-xl">
@@ -22,11 +33,12 @@ export const FakeArcadeLandingMachineScreen: React.FC = () => {
   );
 };
 
-export const FakeArcadeRetroMachineScreen: React.FC<
-  FakeArcadeRetroMachineScreenI
-> = ({ className, style }) => {
+export const RetroArcadeRetroMachineScreen: React.FC<
+  ArcadeLandingMachineScreenI
+> = ({ className, style, id }) => {
   return (
     <div
+      id={`${id}`}
       className={`absolute rounded-xl border-2 border-orange-900 shadow-neonOrange bg-black 
       w-[20vw] h-[30vw] 
       sm:w-[18vw] sm:h-[28vw] 
@@ -40,5 +52,33 @@ export const FakeArcadeRetroMachineScreen: React.FC<
         ...style,
       }}
     ></div>
+  );
+};
+
+export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
+  className,
+  style,
+  name = "ARCADE",
+  onClick,
+  id,
+}) => {
+  const { glow, text, pulse } =
+    gameColorVariants[name] || gameColorVariants.DEFAULT;
+
+  return (
+    <div id={name}>
+      <span
+        onClick={onClick}
+        className={`absolute font-arcade rounded-xl border-2 border-black-900 px-2 py-1
+        ${text} ${glow} ${pulse} ${className} cursor-pointer transition-all`}
+        style={{
+          transform: style?.transform,
+          transformOrigin: style?.transformOrigin,
+          ...style,
+        }}
+      >
+        {name}
+      </span>
+    </div>
   );
 };

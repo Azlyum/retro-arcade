@@ -1,7 +1,7 @@
 import React from "react";
 import { HUD } from "../components/HUD.tsx";
-import { FakeArcadeRetroMachineScreen } from "../components/FakeArcadeMachineScreen.tsx";
-import { VerticalSigns } from "../components/Signs.tsx";
+import { RetroArcadeRetroMachineScreen } from "../components/ArcadeMachineScreens.tsx";
+import { ArcadeMachineScreens } from "../components/ArcadeMachineScreens.tsx";
 
 const RetroScene: React.FC = () => {
   return (
@@ -12,9 +12,9 @@ const RetroScene: React.FC = () => {
         className="absolute inset-0 w-full h-full object-cover opacity-70 z-0"
       />
 
-      <VerticalSigns
+      <ArcadeMachineScreens
         className={
-          " text-lg absolute top-[11.5%] z-10 text-purple-300 text-shadow-neonPurple animate-pulseNeonPurple font-bold font-arcade pointer-events-none border-orange-900 shadow-neonOrange overflow-hidden rounded-xl"
+          " text-lg absolute top-[11.5%] z-10 font-bold font-arcade pointer-events-none overflow-hidden rounded-xl"
         }
         style={{
           top: "40.8vh",
@@ -24,12 +24,12 @@ const RetroScene: React.FC = () => {
           transform: "rotate(4deg) skewX(15deg) skewY(-3deg)",
           transformOrigin: "center",
         }}
-        title={"PIXEL INVADERS"}
+        name={"PIXEL INVADERS"}
       />
 
-      <VerticalSigns
+      <ArcadeMachineScreens
         className={
-          "text-md absolute top-[11.5%] z-10 text-purple-300 text-shadow-neonPurple animate-pulseNeonPurple font-bold font-arcade pointer-events-none border-orange-900 shadow-neonOrange overflow-hidden rounded-xl"
+          "text-md absolute top-[11.5%] z-10 font-bold font-arcade pointer-events-none overflow-hidden rounded-xl"
         }
         style={{
           top: "42.3vh",
@@ -39,12 +39,12 @@ const RetroScene: React.FC = () => {
           transform: "rotate(4deg) skewX(15deg) skewY(-3deg)",
           transformOrigin: "center",
         }}
-        title={"BUG SQUASH"}
+        name={"BUG SQUASH"}
       />
 
-      <VerticalSigns
+      <ArcadeMachineScreens
         className={
-          "text-sm absolute top-[11.5%] z-10 text-purple-300 text-shadow-neonPurple animate-pulseNeonPurple font-bold font-arcade pointer-events-none border-orange-900 shadow-neonOrange overflow-hidden rounded-xl"
+          "text-sm absolute top-[11.5%] z-10 font-bold font-arcade pointer-events-none overflow-hidden rounded-xl"
         }
         style={{
           top: "43.3vh",
@@ -54,11 +54,11 @@ const RetroScene: React.FC = () => {
           transform: "rotate(4deg) skewX(15deg) skewY(-3deg)",
           transformOrigin: "center",
         }}
-        title={"404 RUNNER"}
+        name={"404 RUNNER"}
       />
 
-      <FakeArcadeRetroMachineScreen
-        className="absolute rounded-3xl border-2 border-orange-900 shadow-neonOrange"
+      <RetroArcadeRetroMachineScreen
+        className="absolute rounded-3xl"
         style={{
           top: "40.8vh",
           left: "10vw",
@@ -68,8 +68,8 @@ const RetroScene: React.FC = () => {
           transformOrigin: "center",
         }}
       />
-      <FakeArcadeRetroMachineScreen
-        className="absolute rounded-3xl border-2 border-orange-900 shadow-neonOrange"
+      <RetroArcadeRetroMachineScreen
+        className="absolute rounded-3xl "
         style={{
           top: "42.3vh",
           left: "31vw",
@@ -79,8 +79,8 @@ const RetroScene: React.FC = () => {
           transformOrigin: "center",
         }}
       />
-      <FakeArcadeRetroMachineScreen
-        className="absolute rounded-3xl border-2 border-orange-900 shadow-neonOrange"
+      <RetroArcadeRetroMachineScreen
+        className="absolute rounded-3xl"
         style={{
           top: "43.3vh",
           left: "46.5vw",
