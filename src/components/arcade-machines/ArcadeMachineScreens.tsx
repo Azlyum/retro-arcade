@@ -1,11 +1,5 @@
 import React from "react";
-import { gameColorVariants } from "../games/GameData.tsx";
-
-interface ArcadeLandingMachineScreenI {
-  className?: string;
-  style?: React.CSSProperties;
-  id?: string;
-}
+import { gameColorVariants } from "../../games/GameData.tsx";
 
 interface ArcadeMachineScreensI {
   className?: string;
@@ -13,6 +7,7 @@ interface ArcadeMachineScreensI {
   name?: string;
   id?: string;
   onClick?: () => void;
+  nameSigns?: React.ReactNode;
 }
 
 export const ArcadeLandingMachineScreen: React.FC = () => {
@@ -33,43 +28,22 @@ export const ArcadeLandingMachineScreen: React.FC = () => {
   );
 };
 
-export const RetroArcadeRetroMachineScreen: React.FC<
-  ArcadeLandingMachineScreenI
-> = ({ className, style, id }) => {
-  return (
-    <div
-      id={`${id}`}
-      className={`absolute rounded-xl border-2 border-orange-900 shadow-neonOrange bg-black 
-      w-[20vw] h-[30vw] 
-      sm:w-[18vw] sm:h-[28vw] 
-      md:w-[16vw] md:h-[24vw] 
-      lg:w-[14vw] lg:h-[20vw] 
-      xl:w-[12vw] xl:h-[18vw]
-      ${className}`}
-      style={{
-        transform: style?.transform,
-        transformOrigin: style?.transformOrigin,
-        ...style,
-      }}
-    ></div>
-  );
-};
-
 export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
   className,
   style,
   name = "ARCADE",
   onClick,
-  id,
+  nameSigns,
 }) => {
   const { glow, text, pulse } =
     gameColorVariants[name] || gameColorVariants.DEFAULT;
 
   return (
     <div id={name}>
+      {nameSigns}
       <span
         onClick={onClick}
-        className={`absolute font-arcade rounded-xl border-2 border-black-900 px-2 py-1
+        className={`absolute font-arcade rounded-xl px-2 py-1
         ${text} ${glow} ${pulse} ${className} cursor-pointer transition-all`}
         style={{
           transform: style?.transform,

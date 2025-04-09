@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import LandingPage from "./scenes/LandingScene.tsx";
 import RetroScene from "./scenes/RetroScene.tsx";
-import { useArcadeStore } from "./store/useArcadeStore.tsx";
+import { useArcadeStore } from "./state/useArcadeStore.tsx";
 
 export default function App() {
   const { currentScene, setScene } = useArcadeStore();
