@@ -20,7 +20,7 @@ The **Retro Arcade Web App** is a dynamic, interactive environment designed to m
 
 - **Game Machines** – Clickable cabinets to launch browser-based mini-games.
 - **Animated Doors** – Transitions between rooms using smooth UI animations.
-- 🔐 **Manager's Door** (Locked) – Hidden behind login, this reveals the developer’s **portfolio** in the form of an office. It's subtle, secret, and just for curious minds or recruiters.
+- 🔐 **Manager's Door** (Locked) – Hidden behind login, this reveals my **portfolio** in the form of an office. It's subtle, secret, and just for curious minds or recruiters.
 
 ---
 
