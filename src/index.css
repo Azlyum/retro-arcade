@@ -16,3 +16,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.door-transition {
+  transform-style: preserve-3d;
+  transform-origin: right;
+  transition: transform 2s ease-in-out;
+}
+.rotate-y-0 {
+  transform: rotateY(0deg);
+}
+.rotate-y-90 {
+  transform: rotateY(80deg);
+}

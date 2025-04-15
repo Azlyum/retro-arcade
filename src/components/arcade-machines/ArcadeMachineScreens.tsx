@@ -1,11 +1,20 @@
 import React from "react";
 import { gameColorVariants } from "../../games/GameData.tsx";
+import { screenBase, arcadeMachineShape } from "../../twClasses.tsx";
 
 interface ArcadeMachineScreensI {
   className?: string;
   style?: React.CSSProperties;
   name?: string;
   id?: string;
+  onClick?: () => void;
+  nameSigns?: React.ReactNode;
+}
+
+interface ArcadeMachineScreensI {
+  className?: string;
+  style?: React.CSSProperties;
+  name?: string;
   onClick?: () => void;
   nameSigns?: React.ReactNode;
 }
@@ -29,7 +38,7 @@ export const ArcadeLandingMachineScreen: React.FC = () => {
 };
 
 export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
-  className,
+  className = "",
   style,
   name = "ARCADE",
   onClick,
@@ -39,12 +48,13 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
     gameColorVariants[name] || gameColorVariants.DEFAULT;
 
   return (
-    <div id={name}>
+    <div id={name} className="relative">
       {nameSigns}
+
       <span
         onClick={onClick}
-        className={`absolute font-arcade rounded-xl px-2 py-1
-        ${text} ${glow} ${pulse} ${className} cursor-pointer transition-all`}
+        className={`font-arcade px-2 py-1 rounded-xl absolute transition-all cursor-pointer
+        ${screenBase} ${arcadeMachineShape} ${text} ${glow} ${pulse} ${className}`}
         style={{
           transform: style?.transform,
           transformOrigin: style?.transformOrigin,
