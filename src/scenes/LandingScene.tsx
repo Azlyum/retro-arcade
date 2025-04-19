@@ -1,23 +1,31 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
-import FakeArcadeScreen from "../components/FakeArcadeScreen.tsx";
+import { ArcadeLandingMachineScreen } from "../components/arcade-machines/ArcadeMachineScreens.tsx";
+import { useArcadeStore } from "../state/useArcadeStore.tsx";
 
 type LandingPageProps = {
   onTransitionEnd: () => void;
 };
 
 const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
-  const [startClicked, setStartClicked] = useState(false);
-  const [showCoin, setShowCoin] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
+  const {
+    hasStarted,
+    setHasStarted,
+    startClicked,
+    setStartClicked,
+    showCoin,
+    setShowCoin,
+  } = useArcadeStore();
 
   const [zoomLevel] = useState(5.2);
   const [yOffset] = useState("-20%");
   const [origin] = useState("center 25%");
 
   const handleStart = () => {
-    if (hasStarted) return;
+    if (hasStarted || startClicked) return;
+
+    setHasStarted(true);
 
     const coinSound = new Howl({
       src: ["/sounds/coin-drop.mp3"],
@@ -28,18 +36,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
       src: ["/sounds/arcade-boot.mp3"],
       volume: 0.5,
     });
-    bootSound.play();
+
+    coinSound.play();
 
     setTimeout(() => {
-      coinSound.play();
-      setHasStarted(true);
-    }, 1000);
+      bootSound.play();
+    }, 500);
 
     setShowCoin(true);
+
     setTimeout(() => {
-      setShowCoin(false);
       setStartClicked(true);
-    }, 500);
+      setShowCoin(false);
+    }, 1000);
   };
 
   return (
@@ -67,8 +76,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
             transition={{ duration: 2.5, ease: "easeInOut" }}
             className="relative w-[640px]"
             onAnimationComplete={() => {
-              if (startClicked) {
-                onTransitionEnd(); // trigger scene change!
+              if (startClicked && typeof onTransitionEnd === "function") {
+                onTransitionEnd();
               }
             }}
           >
@@ -82,7 +91,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
               GAMING HUB
             </div>
             <div className="absolute top-[26%] left-[20%] w-[60%] h-[16%] z-0">
-              <FakeArcadeScreen />
+              <ArcadeLandingMachineScreen />
             </div>
 
             {!startClicked && (
@@ -113,7 +122,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTransitionEnd }) => {
                   src="/images/coin.png"
                   alt="Coin Insert"
                   initial={{ y: 0, opacity: 0 }}
-                  animate={{ y: 50, opacity: 1 }}
+                  animate={{ y: -50, opacity: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.6 }}
                   className="absolute bottom-[12%] left-[48%] w-6 rounded-full shadow-[0_0_12px_rgba(255,215,0,0.6)]"

@@ -1,0 +1,46 @@
+🕹️ 1. Pixel Invaders
+A neon-drenched Space Invaders tribute with a portfolio twist
+
+Mechanics: Left/right movement, shoot waves of alien bugs
+
+Style: Pixel art enemies styled as HTML tags, CSS bugs, JS errors
+
+Built With: <canvas> or Phaser
+
+Extra Flavor: Defeated enemies drop floating “portfolio facts” like
+
+“Built in React ⚛️” or “2 years experience 🧠”
+
+Theme Idea: Call it “Debugger Mode”
+
+🐞 2. Bug Squash
+A whac-a-mole style game — but you're smashing code bugs!
+
+Mechanics: Click on random appearing bugs before they disappear
+
+Style: Console errors, red exclamation icons, old-school computer viruses
+
+Built With: Plain React + state logic, no canvas needed
+
+Extra Flavor: When you squash a bug, it might pop up a tooltip like
+
+"Squashed: Unexpected Token 🐛"
+"Fixed by Linter Rule #32 🧹"
+
+💀 3. 404 Runner
+A glitchy, neon endless runner through a broken internet
+
+Mechanics: Side-scroll, jump (spacebar), avoid broken elements
+
+Style: CRT lines, static, pixel characters dodging broken <div>s, 404 signs
+
+Built With: <canvas> or even Three.js later
+
+Extra Flavor:
+
+Collect “commits”, dodge “merge conflicts”
+“404 Not Found” billboards in the background
+Glitched repo messages flashing as you run
+
+Name It: "404 Runner: Escape the Broken Build"
+
