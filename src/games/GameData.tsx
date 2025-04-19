@@ -36,7 +36,7 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-200%",
+      top: "-150%",
       left: "80%",
       transform: "translateX(-50%) rotate(4deg) skewX(9deg) skewY(2deg)",
       transformOrigin: "center",
@@ -54,9 +54,9 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-200%",
+      top: "-150%",
       left: "85%",
-      transform: "translateX(-50%) rotate(4deg) skewX(9deg) skewY(2deg)",
+      transform: "translateX(-50%) rotate(4deg) skewX(6deg) skewY(2deg)",
       transformOrigin: "center",
     },
     textSize: "text-[1.1rem]",
@@ -72,9 +72,9 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-200%",
-      left: "80%",
-      transform: "translateX(-50%) rotate(4deg) skewX(9deg) skewY(2deg)",
+      top: "-150%",
+      left: "90%",
+      transform: "translateX(-50%) rotate(4deg) skewX(6deg) skewY(2deg)",
       transformOrigin: "center",
     },
     textSize: "text-[1rem]",
