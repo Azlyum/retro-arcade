@@ -38,7 +38,7 @@ export const ArcadeLandingMachineScreen: React.FC = () => {
 };
 
 export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
-  className = "",
+  className,
   style,
   name = "ARCADE",
   onClick,
@@ -48,21 +48,18 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
     gameColorVariants[name] || gameColorVariants.DEFAULT;
 
   return (
-    <div id={name} className="relative">
-      {nameSigns}
-
-      <span
-        onClick={onClick}
-        className={`font-arcade px-2 py-1 rounded-xl absolute transition-all cursor-pointer
-        ${screenBase} ${arcadeMachineShape} ${text} ${glow} ${pulse} ${className}`}
-        style={{
-          transform: style?.transform,
-          transformOrigin: style?.transformOrigin,
-          ...style,
-        }}
-      >
-        {name}
-      </span>
+    <div id={name} className="absolute" style={style}>
+      <div className="relative w-full h-full">
+        {nameSigns}
+        <span
+          onClick={onClick}
+          className={`absolute top-1 left-1/2 -translate-x-1/2 
+          font-arcade rounded-xl px-2 py-1 
+          ${text} ${glow} ${pulse} ${className} cursor-pointer transition-all`}
+        >
+          {name}
+        </span>
+      </div>
     </div>
   );
 };

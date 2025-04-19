@@ -6,7 +6,7 @@ import { Signs } from "../components/signs/Signs.tsx";
 
 const RetroScene = () => {
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
+    <div className="relative w-screen h-screen overflow-hidden ">
       <img
         src="./images/retroArcade/retroFloor.png"
         alt="Retro Arcade Floor"
