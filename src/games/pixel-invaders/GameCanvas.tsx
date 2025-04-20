@@ -7,6 +7,7 @@ import {
   drawEnemies,
   updateEnemies,
 } from "./drawEnemies.tsx";
+import { Bullet, drawBullet, updateBullets } from "./drawBullet.tsx";
 
 export const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -14,6 +15,7 @@ export const Canvas = () => {
   const { playerXRef } = usePlayerControls(canvasWidth);
   const enemiesRef = useRef<Enemy[]>(createEnemies(3, 6));
   const directionRef = useRef(1);
+  const bulletsRef = useRef<Bullet[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -29,6 +31,21 @@ export const Canvas = () => {
       setCanvasWidth(newWidth);
     };
 
+    const shootBullet = () => {
+      bulletsRef.current.push({
+        bulletX: playerXRef.current + 22, // Center the bullet
+        bulletY: canvas.height - 60,
+        width: 6,
+        height: 12,
+      });
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        shootBullet();
+      }
+    };
+
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -42,9 +59,12 @@ export const Canvas = () => {
       drawEnemies(ctx, enemiesRef.current);
       drawPlayer(ctx, playerXRef.current, canvas.height);
 
+      bulletsRef.current = updateBullets(bulletsRef.current, canvas.height);
+      drawBullet(ctx, bulletsRef.current);
+
       if (hitBottom) {
-        console.log(alert("💥 Game Over! Enemy reached the bottom!"));
-        // TODO: trigger game over state / stop game
+        console.log("💥 Game Over! Enemy reached the bottom!");
+        // TODO: Trigger game over
       }
 
       requestAnimationFrame(draw);
@@ -53,8 +73,12 @@ export const Canvas = () => {
     resizeCanvas();
     draw();
     window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("keydown", handleKeyDown);
 
-    return () => window.removeEventListener("resize", resizeCanvas);
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [playerXRef]);
 
   return (
