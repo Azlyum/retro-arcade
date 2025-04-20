@@ -16,6 +16,8 @@ export const Canvas = () => {
   const enemiesRef = useRef<Enemy[]>(createEnemies(3, 6));
   const directionRef = useRef(1);
   const bulletsRef = useRef<Bullet[]>([]);
+  const lastShotTime = useRef(0);
+  const fireRate = 300;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,7 +44,11 @@ export const Canvas = () => {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Space") {
-        shootBullet();
+        const now = Date.now();
+        if (now - lastShotTime.current > fireRate) {
+          shootBullet();
+          lastShotTime.current = now;
+        }
       }
     };
 
@@ -55,11 +61,10 @@ export const Canvas = () => {
         canvas.width,
         directionRef
       );
+      bulletsRef.current = updateBullets(bulletsRef.current);
 
       drawEnemies(ctx, enemiesRef.current);
       drawPlayer(ctx, playerXRef.current, canvas.height);
-
-      bulletsRef.current = updateBullets(bulletsRef.current, canvas.height);
       drawBullet(ctx, bulletsRef.current);
 
       if (hitBottom) {
@@ -72,6 +77,7 @@ export const Canvas = () => {
 
     resizeCanvas();
     draw();
+
     window.addEventListener("resize", resizeCanvas);
     window.addEventListener("keydown", handleKeyDown);
 

@@ -12,10 +12,7 @@ export const drawBullet = (ctx: CanvasRenderingContext2D, bullet: Bullet[]) => {
   });
 };
 
-export const updateBullets = (
-  bullets: Bullet[],
-  canvasHeight: number
-): Bullet[] => {
+export const updateBullets = (bullets: Bullet[]): Bullet[] => {
   return bullets
     .map((bullet) => ({
       ...bullet,
