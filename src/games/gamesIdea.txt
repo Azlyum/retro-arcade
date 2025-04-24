@@ -44,3 +44,25 @@ Glitched repo messages flashing as you run
 
 Name It: "404 Runner: Escape the Broken Build"
 
+
+🔖 Quick Reminder Checklist (for when you start):
+ 
+ {}Create PixelInvadersGame.tsx component
+
+ {}Add <canvas ref={...}> and get context
+
+ {}Set up requestAnimationFrame loop
+
+ {}Draw a rectangle for the player
+
+ {}Add keydown listeners for left/right
+
+ {}Make bullets with space key
+
+ {}Set up enemy array and draw them
+
+ {}Collision detection (circle or box)
+
+ {}Display score or portfolio facts as floating text
+
+ {}Test integration inside your retro arcade

@@ -30,7 +30,7 @@ const RetroScene = () => {
       ))}
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-        <HUD className="px-6 py-2 rounded shadow-neonPink" />
+        {/* <HUD className="px-6 py-2 rounded shadow-neonPink" /> */}
       </div>
     </div>
   );
