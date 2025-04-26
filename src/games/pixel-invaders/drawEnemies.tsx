@@ -3,11 +3,12 @@ export interface Enemy {
   y: number;
   width: number;
   height: number;
+  health: number;
 }
 
 export const createEnemies = (rows: number, cols: number): Enemy[] => {
-  const spacingX = 60;
-  const spacingY = 50;
+  const spacingX = 80;
+  const spacingY = 70;
   const enemyWidth = 40;
   const enemyHeight = 40;
 
@@ -20,6 +21,7 @@ export const createEnemies = (rows: number, cols: number): Enemy[] => {
         y: row * spacingY + 30,
         width: enemyWidth,
         height: enemyHeight,
+        health: 100,
       });
     }
   }
@@ -41,9 +43,11 @@ export const updateEnemies = (
   enemies: Enemy[],
   canvasHeight: number,
   canvasWidth: number,
-  directionRef: { current: number }
+  directionRef: { current: number },
+  playerY: number
 ): boolean => {
   let hitBottom = false;
+  let hitPlayer = false;
 
   enemies.forEach((enemy) => {
     enemy.x += 1 * directionRef.current;
@@ -51,6 +55,10 @@ export const updateEnemies = (
     // Check if any enemy hits the bottom
     if (enemy.y + enemy.height >= canvasHeight) {
       hitBottom = true;
+    }
+    // Check if any enemy hits the player
+    if (enemy.y + enemy.height >= playerY) {
+      hitPlayer = true;
     }
   });
 
@@ -65,5 +73,5 @@ export const updateEnemies = (
     });
   }
 
-  return hitBottom;
+  return hitBottom || hitPlayer;
 };

@@ -1,7 +1,6 @@
 import React from "react";
-import { HUD } from "../components/player-utils/HUD.tsx";
 import { ArcadeMachineScreens } from "../components/arcade-machines/ArcadeMachineScreens.tsx";
-import { machines } from "../games/GameData.tsx";
+import { machines } from "../games/GameStyleData.tsx";
 import { Signs } from "../components/signs/Signs.tsx";
 
 const RetroScene = () => {
@@ -29,9 +28,7 @@ const RetroScene = () => {
         />
       ))}
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-        {/* <HUD className="px-6 py-2 rounded shadow-neonPink" /> */}
-      </div>
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10"></div>
     </div>
   );
 };
