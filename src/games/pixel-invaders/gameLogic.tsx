@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Bullet } from "./drawBullet";
+import { Enemy } from "./drawEnemies";
 
 export const usePlayerControls = (
   canvasWidth: number,
@@ -76,4 +77,29 @@ export const usePlayerControls = (
   }, [canvasWidth]);
 
   return { playerX, playerXRef };
+};
+
+export const checkBulletHits = (
+  bullets: Bullet[],
+  enemies: Enemy[],
+  scoreRef: React.RefObject<number>
+) => {
+  bullets.forEach((bullet) => {
+    enemies.forEach((enemy) => {
+      if (
+        bullet.bulletX < enemy.x + enemy.width &&
+        bullet.bulletX + bullet.width > enemy.x &&
+        bullet.bulletY < enemy.y + enemy.height &&
+        bullet.bulletY + bullet.height > enemy.y
+      ) {
+        console.log("Hit detected!");
+        const bulletIndex = bullets.indexOf(bullet);
+        const enemyIndex = enemies.indexOf(enemy);
+
+        if (bulletIndex > -1) bullets.splice(bulletIndex, 1);
+        if (enemyIndex > -1) enemies.splice(enemyIndex, 1);
+        scoreRef.current += 10;
+      }
+    });
+  });
 };

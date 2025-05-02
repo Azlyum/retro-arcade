@@ -7,8 +7,8 @@ export interface Enemy {
 }
 
 export const createEnemies = (rows: number, cols: number): Enemy[] => {
-  const spacingX = 80;
-  const spacingY = 70;
+  const spacingX = 60;
+  const spacingY = 50;
   const enemyWidth = 40;
   const enemyHeight = 40;
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { usePlayerControls } from "./gameLogic.tsx";
+import { usePlayerControls, checkBulletHits } from "./gameLogic.tsx";
 import { drawPlayer } from "./drawPlayer.tsx";
 import {
   Enemy,
@@ -16,6 +16,8 @@ export const Canvas = () => {
   const { playerXRef } = usePlayerControls(canvasWidth, bulletsRef);
   const enemiesRef = useRef<Enemy[]>(createEnemies(3, 6));
   const directionRef = useRef(1);
+  const scoreRef = useRef(0);
+  const waveRef = useRef(1);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -35,7 +37,7 @@ export const Canvas = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const playerY = canvas.height - 40;
 
-      const hit = updateEnemies(
+      const enemiesHitBottom = updateEnemies(
         enemiesRef.current,
         canvas.height,
         canvas.width,
@@ -43,15 +45,28 @@ export const Canvas = () => {
         playerY
       );
       bulletsRef.current = updateBullets(bulletsRef.current);
-
+      checkBulletHits(bulletsRef.current, enemiesRef.current, scoreRef);
       drawEnemies(ctx, enemiesRef.current);
       drawPlayer(ctx, playerXRef.current, canvas.height);
       drawBullet(ctx, bulletsRef.current);
 
-      if (hit) {
-        console.log("💥 Game Over! Enemy reached the bottom!");
+      if (enemiesRef.current.length === 0) {
+        enemiesRef.current = createEnemies(
+          3,
+          Math.floor(Math.random() * 10 + 1)
+        );
+        waveRef.current++;
+      }
+
+      if (enemiesHitBottom) {
+        console.log("Game Over! Enemy reached the bottom!");
         // TODO: Trigger game over
       }
+
+      ctx.fillStyle = "white";
+      ctx.font = "bold 24px 'Press Start 2P', cursive";
+      ctx.fillText(`Wave: ${waveRef.current}`, 20, 30);
+      ctx.fillText(`Score: ${scoreRef.current}`, 720, 30);
 
       requestAnimationFrame(draw);
     };
