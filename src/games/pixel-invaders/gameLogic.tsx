@@ -6,10 +6,10 @@ export const usePlayerControls = (
   canvasWidth: number,
   bulletsRef: React.RefObject<Bullet[]>
 ) => {
-  const [playerX, setPlayerX] = useState(100);
+  const [playerX, setPlayerX] = useState(80);
   const playerXRef = useRef(playerX);
   const lastShotTime = useRef(0);
-  const fireRate = 250;
+  const fireRate = 400;
 
   const keysPressed = useRef<Set<string>>(new Set());
 
@@ -18,7 +18,7 @@ export const usePlayerControls = (
   const shootBullet = () => {
     bulletsRef.current.push({
       bulletX: playerXRef.current + 22,
-      bulletY: 500,
+      bulletY: 700,
       width: 6,
       height: 12,
     });
