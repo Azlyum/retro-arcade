@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bullet } from "./drawBullet";
 import { Enemy } from "./drawEnemies";
+import { FloatingText, portfolioFacts } from "./floatingTextArray.tsx";
 
 export const usePlayerControls = (
   canvasWidth: number,
@@ -78,11 +79,13 @@ export const usePlayerControls = (
 
   return { playerX, playerXRef };
 };
+export let currentFactIndex = 0;
 
 export const checkBulletHits = (
   bullets: Bullet[],
   enemies: Enemy[],
-  scoreRef: React.RefObject<number>
+  scoreRef: React.RefObject<number>,
+  floatingText: React.RefObject<FloatingText[]>
 ) => {
   bullets.forEach((bullet) => {
     enemies.forEach((enemy) => {
@@ -95,10 +98,20 @@ export const checkBulletHits = (
         console.log("Hit detected!");
         const bulletIndex = bullets.indexOf(bullet);
         const enemyIndex = enemies.indexOf(enemy);
-
+        const portfolioText =
+          portfolioFacts[currentFactIndex % portfolioFacts.length];
+        currentFactIndex++;
         if (bulletIndex > -1) bullets.splice(bulletIndex, 1);
         if (enemyIndex > -1) enemies.splice(enemyIndex, 1);
         scoreRef.current += 10;
+        floatingText.current.push({
+          x: enemy.x,
+          y: enemy.y,
+          textPortfolio: portfolioText,
+          opacity: 1,
+          lifespan: 60,
+          text: `${portfolioText}`,
+        });
       }
     });
   });

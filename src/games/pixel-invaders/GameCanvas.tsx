@@ -8,8 +8,13 @@ import {
   updateEnemies,
 } from "./drawEnemies.tsx";
 import { Bullet, drawBullet, updateBullets } from "./drawBullet.tsx";
+import { FloatingText } from "./floatingTextArray.tsx";
 
-export const Canvas = () => {
+export const Canvas = ({
+  onGameOver,
+}: {
+  onGameOver: (score: number) => void;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState(window.innerWidth * 0.95);
   const bulletsRef = useRef<Bullet[]>([]);
@@ -18,6 +23,8 @@ export const Canvas = () => {
   const directionRef = useRef(1);
   const scoreRef = useRef(0);
   const waveRef = useRef(1);
+  const gameOverTriggeredRef = useRef(false);
+  const floatingTextsRef = useRef<FloatingText[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -45,10 +52,26 @@ export const Canvas = () => {
         playerY
       );
       bulletsRef.current = updateBullets(bulletsRef.current);
-      checkBulletHits(bulletsRef.current, enemiesRef.current, scoreRef);
+      checkBulletHits(
+        bulletsRef.current,
+        enemiesRef.current,
+        scoreRef,
+        floatingTextsRef
+      );
       drawEnemies(ctx, enemiesRef.current);
       drawPlayer(ctx, playerXRef.current, canvas.height);
       drawBullet(ctx, bulletsRef.current);
+
+      floatingTextsRef.current.forEach((text) => {
+        ctx.font = '16px "Press Start 2P", cursive';
+        ctx.fillText(text.text, text.x, text.y);
+        text.y -= 1;
+        ctx.fillStyle = `rgba(255, 255, 255, ${text.opacity})`;
+        text.lifespan += 100;
+      });
+      floatingTextsRef.current = floatingTextsRef.current.filter(
+        (t) => t.lifespan > 0
+      );
 
       if (enemiesRef.current.length === 0) {
         enemiesRef.current = createEnemies(
@@ -58,9 +81,9 @@ export const Canvas = () => {
         waveRef.current++;
       }
 
-      if (enemiesHitBottom) {
-        console.log("Game Over! Enemy reached the bottom!");
-        // TODO: Trigger game over
+      if (enemiesHitBottom && !gameOverTriggeredRef.current) {
+        gameOverTriggeredRef.current = true;
+        onGameOver(scoreRef.current);
       }
 
       ctx.fillStyle = "white";
@@ -79,7 +102,7 @@ export const Canvas = () => {
     return () => {
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, [playerXRef]);
+  }, [onGameOver, playerXRef]);
 
   return (
     <canvas
