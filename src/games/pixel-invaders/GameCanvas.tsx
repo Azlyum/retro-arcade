@@ -8,7 +8,8 @@ import {
   updateEnemies,
 } from "./drawEnemies.tsx";
 import { Bullet, drawBullet, updateBullets } from "./drawBullet.tsx";
-import { FloatingText } from "./floatingTextArray.tsx";
+import { FloatingText } from "./utils/floatingTextArray.tsx";
+import { PowerUp } from "./utils/powerUpUtils.tsx";
 
 export const Canvas = ({
   onGameOver,
@@ -17,14 +18,22 @@ export const Canvas = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState(window.innerWidth * 0.95);
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight * 0.85);
   const bulletsRef = useRef<Bullet[]>([]);
-  const { playerXRef } = usePlayerControls(canvasWidth, bulletsRef);
+  const fireRateRef = useRef(400);
+  const { playerXRef } = usePlayerControls(
+    canvasWidth,
+    canvasHeight,
+    bulletsRef,
+    fireRateRef
+  );
   const enemiesRef = useRef<Enemy[]>(createEnemies(3, 6));
   const directionRef = useRef(1);
   const scoreRef = useRef(0);
   const waveRef = useRef(1);
   const gameOverTriggeredRef = useRef(false);
   const floatingTextsRef = useRef<FloatingText[]>([]);
+  const powerUpsRef = useRef<PowerUp[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -38,6 +47,7 @@ export const Canvas = ({
       canvas.width = newWidth;
       canvas.height = newHeight;
       setCanvasWidth(newWidth);
+      setCanvasHeight(canvasHeight);
     };
 
     const draw = () => {
@@ -56,8 +66,10 @@ export const Canvas = ({
         bulletsRef.current,
         enemiesRef.current,
         scoreRef,
-        floatingTextsRef
+        floatingTextsRef,
+        powerUpsRef
       );
+
       drawEnemies(ctx, enemiesRef.current);
       drawPlayer(ctx, playerXRef.current, canvas.height);
       drawBullet(ctx, bulletsRef.current);
@@ -72,6 +84,31 @@ export const Canvas = ({
       floatingTextsRef.current = floatingTextsRef.current.filter(
         (t) => t.lifespan > 0
       );
+
+      powerUpsRef.current.forEach((power) => {
+        power.y += 1;
+        ctx.font = '16px "Press Start 2P", cursive';
+        ctx.fillStyle = `rgba(255, 255, 255, ${power.opacity})`;
+        ctx.fillText(power.power, power.x, power.y);
+      });
+      powerUpsRef.current = powerUpsRef.current.filter(
+        (p) => Date.now() < p.powerUpExpirationTimer
+      );
+
+      powerUpsRef.current = powerUpsRef.current.filter((p) => {
+        const isColliding =
+          p.x < playerXRef.current + 50 &&
+          p.x + p.width > playerXRef.current &&
+          p.y < playerY + 20 &&
+          p.y + p.height > playerY;
+
+        if (isColliding) {
+          console.log("Collected power-up:", p.power);
+          if (p.power) fireRateRef.current = 150;
+          return false;
+        }
+        return true;
+      });
 
       if (enemiesRef.current.length === 0) {
         enemiesRef.current = createEnemies(
@@ -102,6 +139,7 @@ export const Canvas = ({
     return () => {
       window.removeEventListener("resize", resizeCanvas);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onGameOver, playerXRef]);
 
   return (

@@ -52,11 +52,13 @@ export const updateEnemies = (
   enemies.forEach((enemy) => {
     enemy.x += 1 * directionRef.current;
 
-    // Check if any enemy hits the bottom
+    //! Check if any enemy hits the bottom
+
     if (enemy.y + enemy.height >= canvasHeight) {
       hitBottom = true;
     }
-    // Check if any enemy hits the player
+    //! Check if any enemy hits the player
+
     if (enemy.y + enemy.height >= playerY) {
       hitPlayer = true;
     }
@@ -65,7 +67,8 @@ export const updateEnemies = (
   const leftMost = Math.min(...enemies.map((e) => e.x));
   const rightMost = Math.max(...enemies.map((e) => e.x + e.width));
 
-  // Change direction and move down if touching sides
+  //! Change direction and move down if touching sides
+
   if (leftMost < 0 || rightMost > canvasWidth) {
     directionRef.current *= -1;
     enemies.forEach((enemy) => {

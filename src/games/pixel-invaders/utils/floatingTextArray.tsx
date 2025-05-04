@@ -35,7 +35,7 @@ export const portfolioFacts = [
   "Jest & RTL for Testing ✅",
   "Agile Collaborator 🌀",
   "API Whisperer (REST + GraphQL) 🔌",
-  "Optimised for Speed ⚡",
+  "Optimized for Speed ⚡",
   "Responsive Design 📱",
   "Code Reviewed @ Sky 🚀",
   "NHS Dev – Built for Health 🏥",

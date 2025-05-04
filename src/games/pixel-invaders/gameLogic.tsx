@@ -1,16 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 import { Bullet } from "./drawBullet";
 import { Enemy } from "./drawEnemies";
-import { FloatingText, portfolioFacts } from "./floatingTextArray.tsx";
+import { FloatingText, portfolioFacts } from "./utils/floatingTextArray.tsx";
+import { PowerUp, PowerUpType } from "./utils/powerUpUtils.tsx";
+
+export const allPowerUpTypes: PowerUpType[] = [
+  "shield",
+  "rapid fire",
+  "double shot",
+  "big bullets",
+  "speed boost",
+  "bullet spread",
+  "freeze enemies",
+  "score boost",
+  "slow motion",
+  "auto fire",
+];
 
 export const usePlayerControls = (
   canvasWidth: number,
-  bulletsRef: React.RefObject<Bullet[]>
+  canvasHeight: number,
+  bulletsRef: React.RefObject<Bullet[]>,
+  fireRateRef: React.RefObject<number>
 ) => {
-  const [playerX, setPlayerX] = useState(80);
+  const [playerX, setPlayerX] = useState(60);
   const playerXRef = useRef(playerX);
   const lastShotTime = useRef(0);
-  const fireRate = 400;
 
   const keysPressed = useRef<Set<string>>(new Set());
 
@@ -19,12 +34,11 @@ export const usePlayerControls = (
   const shootBullet = () => {
     bulletsRef.current.push({
       bulletX: playerXRef.current + 22,
-      bulletY: 700,
+      bulletY: canvasHeight - 80,
       width: 6,
       height: 12,
     });
   };
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       keysPressed.current.add(e.code);
@@ -37,7 +51,7 @@ export const usePlayerControls = (
     const gameLoop = () => {
       let newX = playerXRef.current;
 
-      // Movement
+      //! Movement
       if (
         keysPressed.current.has("ArrowLeft") ||
         keysPressed.current.has("KeyA")
@@ -52,10 +66,10 @@ export const usePlayerControls = (
         newX = Math.min(newX + 1.8, canvasWidth - PLAYER_WIDTH);
       }
 
-      // Shooting
+      //! Shooting
       if (keysPressed.current.has("Space")) {
         const now = Date.now();
-        if (now - lastShotTime.current > fireRate) {
+        if (now - lastShotTime.current > fireRateRef.current) {
           shootBullet();
           lastShotTime.current = now;
         }
@@ -79,13 +93,15 @@ export const usePlayerControls = (
 
   return { playerX, playerXRef };
 };
+
 export let currentFactIndex = 0;
 
 export const checkBulletHits = (
   bullets: Bullet[],
   enemies: Enemy[],
   scoreRef: React.RefObject<number>,
-  floatingText: React.RefObject<FloatingText[]>
+  floatingText: React.RefObject<FloatingText[]>,
+  powerUp: React.RefObject<PowerUp[]>
 ) => {
   bullets.forEach((bullet) => {
     enemies.forEach((enemy) => {
@@ -95,12 +111,17 @@ export const checkBulletHits = (
         bullet.bulletY < enemy.y + enemy.height &&
         bullet.bulletY + bullet.height > enemy.y
       ) {
-        console.log("Hit detected!");
         const bulletIndex = bullets.indexOf(bullet);
         const enemyIndex = enemies.indexOf(enemy);
         const portfolioText =
           portfolioFacts[currentFactIndex % portfolioFacts.length];
         currentFactIndex++;
+        const droppingPowerUps =
+          allPowerUpTypes[Math.floor(Math.random() * allPowerUpTypes.length)];
+        const POWER_UP_DROP_CHANCE = 0.03;
+        const MAX_ACTIVE_POWERUPS = 2;
+        const powerUpsDrop = Math.random() < POWER_UP_DROP_CHANCE;
+
         if (bulletIndex > -1) bullets.splice(bulletIndex, 1);
         if (enemyIndex > -1) enemies.splice(enemyIndex, 1);
         scoreRef.current += 10;
@@ -112,6 +133,17 @@ export const checkBulletHits = (
           lifespan: 60,
           text: `${portfolioText}`,
         });
+        if (powerUpsDrop && powerUp.current.length < MAX_ACTIVE_POWERUPS) {
+          powerUp.current.push({
+            power: droppingPowerUps,
+            x: enemy.x,
+            y: enemy.y,
+            height: 6,
+            width: 6,
+            opacity: 1,
+            powerUpExpirationTimer: Date.now() + 15000,
+          });
+        }
       }
     });
   });
