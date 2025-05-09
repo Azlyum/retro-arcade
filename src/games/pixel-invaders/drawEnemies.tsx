@@ -44,20 +44,25 @@ export const updateEnemies = (
   canvasHeight: number,
   canvasWidth: number,
   directionRef: { current: number },
-  playerY: number
+  playerY: number,
+  isFreezeEnemiesActiveRef,
+  isSlowMotionActiveRef: React.RefObject<boolean>,
+  waveRef
 ): boolean => {
   let hitBottom = false;
   let hitPlayer = false;
 
-  enemies.forEach((enemy) => {
-    enemy.x += 1 * directionRef.current;
+  if (isFreezeEnemiesActiveRef.current) return false;
 
-    //! Check if any enemy hits the bottom
+  enemies.forEach((enemy) => {
+    const baseSpeed = isSlowMotionActiveRef.current ? 0.4 : 1;
+    const waveSpeedMultiplier = 1 + waveRef.current * 0.05;
+    const speed = baseSpeed * waveSpeedMultiplier;
+    enemy.x += speed * directionRef.current;
 
     if (enemy.y + enemy.height >= canvasHeight) {
       hitBottom = true;
     }
-    //! Check if any enemy hits the player
 
     if (enemy.y + enemy.height >= playerY) {
       hitPlayer = true;
@@ -66,8 +71,6 @@ export const updateEnemies = (
 
   const leftMost = Math.min(...enemies.map((e) => e.x));
   const rightMost = Math.max(...enemies.map((e) => e.x + e.width));
-
-  //! Change direction and move down if touching sides
 
   if (leftMost < 0 || rightMost > canvasWidth) {
     directionRef.current *= -1;

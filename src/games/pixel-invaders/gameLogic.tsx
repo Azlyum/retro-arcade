@@ -17,28 +17,66 @@ export const allPowerUpTypes: PowerUpType[] = [
   "auto fire",
 ];
 
+const PLAYER_WIDTH = 50;
+
 export const usePlayerControls = (
   canvasWidth: number,
   canvasHeight: number,
   bulletsRef: React.RefObject<Bullet[]>,
-  fireRateRef: React.RefObject<number>
+  fireRateRef: React.RefObject<number>,
+  isDoubleShotActiveRef,
+  bigBulletActiveRef,
+  playerSpeedBoostRef,
+  isBulletSpreadActiveRef,
+  isAutoFireActiveRef: React.RefObject<boolean>
 ) => {
-  const [playerX, setPlayerX] = useState(60);
+  const [playerX, setPlayerX] = useState((canvasWidth - PLAYER_WIDTH) / 2);
   const playerXRef = useRef(playerX);
   const lastShotTime = useRef(0);
 
   const keysPressed = useRef<Set<string>>(new Set());
 
-  const PLAYER_WIDTH = 50;
-
   const shootBullet = () => {
+    const width = bigBulletActiveRef.current ? 22 : 12;
+    const height = bigBulletActiveRef.current ? 22 : 12;
+
     bulletsRef.current.push({
       bulletX: playerXRef.current + 22,
       bulletY: canvasHeight - 80,
-      width: 6,
-      height: 12,
+      width,
+      height,
+      dx: 0,
     });
+
+    if (isDoubleShotActiveRef.current) {
+      bulletsRef.current.push({
+        bulletX: playerXRef.current + 10,
+        bulletY: canvasHeight - 80,
+        width,
+        height,
+        dx: 0,
+      });
+    }
+
+    if (isBulletSpreadActiveRef.current) {
+      bulletsRef.current.push({
+        bulletX: playerXRef.current + 22,
+        bulletY: canvasHeight - 80,
+        width,
+        height,
+        dx: -2,
+      });
+
+      bulletsRef.current.push({
+        bulletX: playerXRef.current + 22,
+        bulletY: canvasHeight - 80,
+        width,
+        height,
+        dx: 2,
+      });
+    }
   };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       keysPressed.current.add(e.code);
@@ -50,24 +88,27 @@ export const usePlayerControls = (
 
     const gameLoop = () => {
       let newX = playerXRef.current;
+      const movementSpeed = playerSpeedBoostRef.current ? 3.5 : 1.8;
 
-      //! Movement
       if (
         keysPressed.current.has("ArrowLeft") ||
         keysPressed.current.has("KeyA")
       ) {
-        newX = Math.max(newX - 1.8, 0);
+        newX = Math.max(newX - movementSpeed, 0);
       }
 
       if (
         keysPressed.current.has("ArrowRight") ||
         keysPressed.current.has("KeyD")
       ) {
-        newX = Math.min(newX + 1.8, canvasWidth - PLAYER_WIDTH);
+        newX = Math.min(newX + movementSpeed, canvasWidth - PLAYER_WIDTH);
       }
 
       //! Shooting
-      if (keysPressed.current.has("Space")) {
+      const shouldShoot =
+        keysPressed.current.has("Space") || isAutoFireActiveRef.current;
+
+      if (shouldShoot) {
         const now = Date.now();
         if (now - lastShotTime.current > fireRateRef.current) {
           shootBullet();
@@ -77,6 +118,7 @@ export const usePlayerControls = (
 
       playerXRef.current = newX;
       setPlayerX(newX);
+
       requestAnimationFrame(gameLoop);
     };
 
@@ -101,7 +143,9 @@ export const checkBulletHits = (
   enemies: Enemy[],
   scoreRef: React.RefObject<number>,
   floatingText: React.RefObject<FloatingText[]>,
-  powerUp: React.RefObject<PowerUp[]>
+  powerUp: React.RefObject<PowerUp[]>,
+  isScoreBoostActiveRef: React.RefObject<boolean>,
+  waveRef: React.RefObject<number>
 ) => {
   bullets.forEach((bullet) => {
     enemies.forEach((enemy) => {
@@ -118,13 +162,16 @@ export const checkBulletHits = (
         currentFactIndex++;
         const droppingPowerUps =
           allPowerUpTypes[Math.floor(Math.random() * allPowerUpTypes.length)];
-        const POWER_UP_DROP_CHANCE = 0.03;
-        const MAX_ACTIVE_POWERUPS = 2;
-        const powerUpsDrop = Math.random() < POWER_UP_DROP_CHANCE;
+        const powerUpDropChance = 0.07;
+        const maxActivePowerUps = 2;
+        const powerUpsDrop = Math.random() < powerUpDropChance;
+        const scoreGain = isScoreBoostActiveRef.current
+          ? 20 + waveRef.current * 2
+          : 10 + waveRef.current * 2;
 
         if (bulletIndex > -1) bullets.splice(bulletIndex, 1);
         if (enemyIndex > -1) enemies.splice(enemyIndex, 1);
-        scoreRef.current += 10;
+        scoreRef.current += scoreGain;
         floatingText.current.push({
           x: enemy.x,
           y: enemy.y,
@@ -133,7 +180,7 @@ export const checkBulletHits = (
           lifespan: 60,
           text: `${portfolioText}`,
         });
-        if (powerUpsDrop && powerUp.current.length < MAX_ACTIVE_POWERUPS) {
+        if (powerUpsDrop && powerUp.current.length < maxActivePowerUps) {
           powerUp.current.push({
             power: droppingPowerUps,
             x: enemy.x,
