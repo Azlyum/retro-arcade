@@ -10,9 +10,9 @@ export const drawPlayer = (
   canvasHeight: number,
   isShieldActive: boolean
 ) => {
-  const PLAYER_Y = canvasHeight - 50;
-  const width = 50;
-  const height = 50;
+  const PLAYER_Y = canvasHeight - 100;
+  const width = 100;
+  const height = 100;
 
   if (playerImg.complete) {
     ctx.drawImage(playerImg, playerX, PLAYER_Y, width, height);
@@ -24,8 +24,8 @@ export const drawPlayer = (
       shieldImg,
       playerX - 10,
       PLAYER_Y - 10,
-      width + 20,
-      height + 20
+      width + 60,
+      height + 60
     );
     ctx.globalAlpha = 1;
   }
