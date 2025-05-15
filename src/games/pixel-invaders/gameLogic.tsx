@@ -1,20 +1,29 @@
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { Bullet } from "./drawBullet";
 import { Enemy } from "./drawEnemies";
 import { FloatingText, portfolioFacts } from "./utils/floatingTextArray.tsx";
 import { PowerUp, PowerUpType } from "./utils/powerUpUtils.tsx";
 
+// weighted array
 export const allPowerUpTypes: PowerUpType[] = [
   "shield",
   "rapid fire",
+  "rapid fire",
   "double shot",
+  "double shot",
+  "big bullets",
   "big bullets",
   "speed boost",
   "bullet spread",
+  "bullet spread",
   "freeze enemies",
   "score boost",
+  "score boost",
+  "slow motion",
   "slow motion",
   "auto fire",
+  "auto fire",
+  "damage boost",
 ];
 
 const PLAYER_WIDTH = 50;
@@ -24,11 +33,12 @@ export const usePlayerControls = (
   canvasHeight: number,
   bulletsRef: React.RefObject<Bullet[]>,
   fireRateRef: React.RefObject<number>,
-  isDoubleShotActiveRef,
-  bigBulletActiveRef,
-  playerSpeedBoostRef,
-  isBulletSpreadActiveRef,
-  isAutoFireActiveRef: React.RefObject<boolean>
+  isDoubleShotActiveRef: RefObject<boolean>,
+  bigBulletActiveRef: RefObject<boolean>,
+  playerSpeedBoostRef: RefObject<boolean>,
+  isBulletSpreadActiveRef: RefObject<boolean>,
+  isAutoFireActiveRef: React.RefObject<boolean>,
+  playerDamageMultiplierRef: React.RefObject<number>
 ) => {
   const [playerX, setPlayerX] = useState((canvasWidth - PLAYER_WIDTH) / 2);
   const playerXRef = useRef(playerX);
@@ -39,6 +49,10 @@ export const usePlayerControls = (
   const shootBullet = () => {
     const width = bigBulletActiveRef.current ? 22 : 12;
     const height = bigBulletActiveRef.current ? 22 : 12;
+    const damageMultiplier = playerDamageMultiplierRef.current;
+    const bigBulletDamage = bigBulletActiveRef.current ? 200 : 100;
+    const doubleShotDamage = 200;
+    const baseDamage = 100;
 
     bulletsRef.current.push({
       bulletX: playerXRef.current + 22,
@@ -46,6 +60,7 @@ export const usePlayerControls = (
       width,
       height,
       dx: 0,
+      damage: bigBulletDamage * damageMultiplier,
     });
 
     if (isDoubleShotActiveRef.current) {
@@ -55,6 +70,7 @@ export const usePlayerControls = (
         width,
         height,
         dx: 0,
+        damage: doubleShotDamage * damageMultiplier,
       });
     }
 
@@ -65,6 +81,7 @@ export const usePlayerControls = (
         width,
         height,
         dx: -2,
+        damage: baseDamage * damageMultiplier,
       });
 
       bulletsRef.current.push({
@@ -73,6 +90,7 @@ export const usePlayerControls = (
         width,
         height,
         dx: 2,
+        damage: baseDamage * damageMultiplier,
       });
     }
   };
@@ -147,51 +165,60 @@ export const checkBulletHits = (
   isScoreBoostActiveRef: React.RefObject<boolean>,
   waveRef: React.RefObject<number>
 ) => {
-  bullets.forEach((bullet) => {
-    enemies.forEach((enemy) => {
-      if (
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const bullet = bullets[i];
+
+    for (let j = enemies.length - 1; j >= 0; j--) {
+      const enemy = enemies[j];
+
+      const isHit =
         bullet.bulletX < enemy.x + enemy.width &&
         bullet.bulletX + bullet.width > enemy.x &&
         bullet.bulletY < enemy.y + enemy.height &&
-        bullet.bulletY + bullet.height > enemy.y
-      ) {
-        const bulletIndex = bullets.indexOf(bullet);
-        const enemyIndex = enemies.indexOf(enemy);
-        const portfolioText =
-          portfolioFacts[currentFactIndex % portfolioFacts.length];
-        currentFactIndex++;
-        const droppingPowerUps =
-          allPowerUpTypes[Math.floor(Math.random() * allPowerUpTypes.length)];
-        const powerUpDropChance = 0.07;
-        const maxActivePowerUps = 2;
-        const powerUpsDrop = Math.random() < powerUpDropChance;
-        const scoreGain = isScoreBoostActiveRef.current
-          ? 20 + waveRef.current * 2
-          : 10 + waveRef.current * 2;
+        bullet.bulletY + bullet.height > enemy.y;
 
-        if (bulletIndex > -1) bullets.splice(bulletIndex, 1);
-        if (enemyIndex > -1) enemies.splice(enemyIndex, 1);
-        scoreRef.current += scoreGain;
-        floatingText.current.push({
-          x: enemy.x,
-          y: enemy.y,
-          textPortfolio: portfolioText,
-          opacity: 1,
-          lifespan: 60,
-          text: `${portfolioText}`,
-        });
-        if (powerUpsDrop && powerUp.current.length < maxActivePowerUps) {
-          powerUp.current.push({
-            power: droppingPowerUps,
+      if (isHit) {
+        enemy.health -= bullet.damage;
+        bullets.splice(i, 1);
+        if (enemy.health <= 0) {
+          enemies.splice(j, 1);
+          scoreRef.current += isScoreBoostActiveRef.current
+            ? 20 + waveRef.current * 2
+            : 10 + waveRef.current * 2;
+
+          const text =
+            portfolioFacts[currentFactIndex++ % portfolioFacts.length];
+          floatingText.current.push({
             x: enemy.x,
             y: enemy.y,
-            height: 6,
-            width: 6,
+            textPortfolio: text,
             opacity: 1,
-            powerUpExpirationTimer: Date.now() + 15000,
+            lifespan: 60,
+            text,
           });
+
+          const droppingPowerUps =
+            allPowerUpTypes[Math.floor(Math.random() * allPowerUpTypes.length)];
+          const powerUpDropChance = 0.07;
+          const maxActivePowerUps = 2;
+
+          if (
+            Math.random() < powerUpDropChance &&
+            powerUp.current.length < maxActivePowerUps
+          ) {
+            powerUp.current.push({
+              power: droppingPowerUps,
+              x: enemy.x,
+              y: enemy.y,
+              height: 32,
+              width: 32,
+              opacity: 1,
+              powerUpExpirationTimer: Date.now() + 15000,
+            });
+          }
         }
+        break;
       }
-    });
-  });
+    }
+  }
 };

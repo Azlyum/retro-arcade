@@ -3,6 +3,7 @@ export interface Bullet {
   bulletY: number;
   width: number;
   height: number;
+  damage: number;
   dx?: number;
 }
 
@@ -14,10 +15,28 @@ export interface EnemyBullet {
   enemyBulletdx?: number;
 }
 
-export const drawBullet = (ctx: CanvasRenderingContext2D, bullet: Bullet[]) => {
-  ctx.fillStyle = "#008000";
-  bullet.forEach((bullet) => {
-    ctx.fillRect(bullet.bulletX, bullet.bulletY, bullet.width, bullet.height);
+const basicBullet = new Image();
+basicBullet.src = require("./assets/playerBullet.png");
+
+const bigBullet = new Image();
+bigBullet.src = require("./assets/bullet_big.png");
+
+export const drawBullet = (
+  ctx: CanvasRenderingContext2D,
+  bullets: Bullet[]
+) => {
+  bullets.forEach((bullet) => {
+    const sprite = bullet.width > 12 ? bigBullet : basicBullet;
+
+    if (sprite.complete) {
+      ctx.drawImage(
+        sprite,
+        bullet.bulletX,
+        bullet.bulletY,
+        bullet.width,
+        bullet.height
+      );
+    }
   });
 };
 

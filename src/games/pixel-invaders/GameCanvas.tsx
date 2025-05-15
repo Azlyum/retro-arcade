@@ -16,7 +16,7 @@ import {
   updateEnemyBullets,
 } from "./drawBullet.tsx";
 import { FloatingText } from "./utils/floatingTextArray.tsx";
-import { PowerUp } from "./utils/powerUpUtils.tsx";
+import { PowerUp, powerUpIconMap } from "./utils/powerUpUtils.tsx";
 
 export const Canvas = ({
   onGameOver,
@@ -33,13 +33,15 @@ export const Canvas = ({
   const lastEnemyShotTimeRef = useRef(Date.now() + 1000);
   const isShieldActiveRef = useRef(false);
   const isDoubleShotActiveRef = useRef(false);
-  const bigBulletActiveRef = useRef(false);
+  const isBigBulletActiveRef = useRef(false);
   const isPlayerSpeedBoostActiveRef = useRef(false);
   const isBulletSpreadActiveRef = useRef(false);
   const isFreezeEnemiesActiveRef = useRef(false);
   const isScoreBoostActiveRef = useRef(false);
   const isSlowMotionActiveRef = useRef(false);
   const isAutoFireActiveRef = useRef(false);
+  const playerDamageMultiplierRef = useRef(1);
+  const activePowerUpsRef = useRef<{ power: string; expiration: number }[]>([]);
 
   const { playerXRef } = usePlayerControls(
     canvasWidth,
@@ -47,36 +49,12 @@ export const Canvas = ({
     bulletsRef,
     fireRateRef,
     isDoubleShotActiveRef,
-    bigBulletActiveRef,
+    isBigBulletActiveRef,
     isPlayerSpeedBoostActiveRef,
     isBulletSpreadActiveRef,
-    isAutoFireActiveRef
+    isAutoFireActiveRef,
+    playerDamageMultiplierRef
   );
-
-  const createCenteredEnemies = (rows: number, cols: number): Enemy[] => {
-    const spacingX = 60;
-    const spacingY = 50;
-    const enemyWidth = 40;
-    const enemyHeight = 40;
-    const totalWidth = cols * spacingX;
-    const offsetX = (canvasWidth - totalWidth) / 2;
-
-    const enemies: Enemy[] = [];
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        enemies.push({
-          x: offsetX + col * spacingX,
-          y: row * spacingY + 30,
-          width: enemyWidth,
-          height: enemyHeight,
-          health: 100,
-        });
-      }
-    }
-
-    return enemies;
-  };
 
   const enemiesRef = useRef<Enemy[]>([]);
   const directionRef = useRef(1);
@@ -87,16 +65,17 @@ export const Canvas = ({
   const powerUpsRef = useRef<PowerUp[]>([]);
 
   useEffect(() => {
-    enemiesRef.current = createCenteredEnemies(3, 6);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    enemiesRef.current = createEnemies(3, 6, waveRef.current);
   }, [canvasWidth]);
 
   const activatePowerUp = (power: string) => {
     const duration = 15000;
+    const expiration = Date.now() + duration;
+
+    // Apply effect
     switch (power) {
       case "shield":
         isShieldActiveRef.current = true;
-        setTimeout(() => (isShieldActiveRef.current = false), duration);
         break;
       case "rapid fire":
         fireRateRef.current = 150;
@@ -107,8 +86,8 @@ export const Canvas = ({
         setTimeout(() => (isDoubleShotActiveRef.current = false), duration);
         break;
       case "big bullets":
-        bigBulletActiveRef.current = true;
-        setTimeout(() => (bigBulletActiveRef.current = false), duration);
+        isBigBulletActiveRef.current = true;
+        setTimeout(() => (isBigBulletActiveRef.current = false), duration);
         break;
       case "speed boost":
         isPlayerSpeedBoostActiveRef.current = true;
@@ -137,7 +116,16 @@ export const Canvas = ({
         isAutoFireActiveRef.current = true;
         setTimeout(() => (isAutoFireActiveRef.current = false), duration);
         break;
+      case "damage boost":
+        playerDamageMultiplierRef.current += 0.5;
+        break;
     }
+
+    // Add to HUD list (overwrite if same power is already active)
+    activePowerUpsRef.current = [
+      ...activePowerUpsRef.current.filter((p) => p.power !== power),
+      { power, expiration },
+    ];
   };
 
   useEffect(() => {
@@ -184,7 +172,7 @@ export const Canvas = ({
           enemyBulletsRef.current.push({
             enemyBulletX: shooter.x + shooter.width / 2,
             enemyBulletY: shooter.y + shooter.height,
-            enemyBulletwidth: 6,
+            enemyBulletwidth: 10,
             enemyBulletheight: 12,
           });
         }
@@ -225,11 +213,51 @@ export const Canvas = ({
         waveRef
       );
 
+      const drawPowerUpHUD = (ctx: CanvasRenderingContext2D) => {
+        const iconSize = 40;
+        const padding = 10;
+        const startX = 20;
+        const startY = 60;
+
+        const now = Date.now();
+        activePowerUpsRef.current = activePowerUpsRef.current.filter(
+          (p) => p.expiration > now
+        );
+
+        activePowerUpsRef.current.forEach((powerUp, i) => {
+          const iconPath = powerUpIconMap[powerUp.power];
+          if (!iconPath) return;
+
+          const img = new Image();
+          img.src = iconPath;
+
+          const alpha = Math.max(0.3, (powerUp.expiration - now) / 15000);
+
+          if (img.complete && img.naturalWidth > 0) {
+            ctx.globalAlpha = alpha;
+            ctx.drawImage(
+              img,
+              startX + i * (iconSize + padding),
+              startY,
+              iconSize,
+              iconSize
+            );
+            ctx.globalAlpha = 1;
+          }
+        });
+      };
+
       drawBullet(ctx, bulletsRef.current);
       drawEnemyBullets(ctx, enemyBulletsRef.current);
 
       drawEnemies(ctx, enemiesRef.current);
-      drawPlayer(ctx, playerXRef.current, canvas.height);
+      drawPlayer(
+        ctx,
+        playerXRef.current,
+        canvas.height,
+        isShieldActiveRef.current
+      );
+      drawPowerUpHUD(ctx);
 
       floatingTextsRef.current.forEach((text) => {
         ctx.font = '16px "Press Start 2P", cursive';
@@ -244,20 +272,27 @@ export const Canvas = ({
 
       powerUpsRef.current.forEach((power) => {
         power.y += 1;
-        ctx.font = '16px "Press Start 2P", cursive';
-        ctx.fillStyle = `rgba(255, 255, 255, ${power.opacity})`;
-        ctx.fillText(power.power, power.x, power.y);
+        const iconPath = powerUpIconMap[power.power];
+        if (!iconPath) return;
+
+        const img = new Image();
+        img.src = iconPath;
+
+        if (img.complete && img.naturalWidth > 0) {
+          ctx.drawImage(img, power.x, power.y, 32, 32);
+        } else {
+          img.onload = () => {
+            ctx.drawImage(img, power.x, power.y, 32, 32);
+          };
+        }
       });
-      powerUpsRef.current = powerUpsRef.current.filter(
-        (p) => Date.now() < p.powerUpExpirationTimer
-      );
 
       powerUpsRef.current = powerUpsRef.current.filter((p) => {
         const isColliding =
           p.x < playerXRef.current + 50 &&
-          p.x + p.width > playerXRef.current &&
-          p.y < playerY + 20 &&
-          p.y + p.height > playerY;
+          p.x + 32 > playerXRef.current &&
+          p.y < playerY + 30 &&
+          p.y + 32 > playerY;
 
         if (isColliding) {
           activatePowerUp(p.power);
@@ -270,7 +305,8 @@ export const Canvas = ({
         enemyFireRateRef.current = Math.max(800, 2000 - waveRef.current * 100);
         enemiesRef.current = createEnemies(
           3,
-          Math.floor(Math.random() * 10 + 1)
+          Math.floor(Math.random() * 10 + 1),
+          waveRef.current
         );
         waveRef.current++;
       }
