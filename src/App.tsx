@@ -4,6 +4,7 @@ import LandingPage from "./scenes/LandingScene.tsx";
 import RetroScene from "./scenes/RetroScene.tsx";
 import { useArcadeStore } from "./state/useArcadeStore.tsx";
 import { Canvas } from "./games/pixel-invaders/GameCanvas.tsx";
+import { PixelInvadersStartScreen } from "./games/pixel-invaders/pixelInvadersGame.tsx";
 
 export default function App() {
   const { currentScene, setScene } = useArcadeStore();
@@ -14,7 +15,7 @@ export default function App() {
         <LandingPage onTransitionEnd={() => setScene("arcade")} />
       )}
       {currentScene === "arcade" && <RetroScene />} */}
-      <Canvas />
+      <PixelInvadersStartScreen/>
     </>
   );
 }

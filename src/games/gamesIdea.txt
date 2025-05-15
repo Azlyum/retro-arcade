@@ -28,7 +28,7 @@ Extra Flavor: When you squash a bug, it might pop up a tooltip like
 "Fixed by Linter Rule #32 🧹"
 
 💀 3. 404 Runner
-A glitchy, neon endless runner through a broken internet
+A glitchy, neon endless runner through broken internet
 
 Mechanics: Side-scroll, jump (spacebar), avoid broken elements
 
@@ -45,7 +45,7 @@ Glitched repo messages flashing as you run
 Name It: "404 Runner: Escape the Broken Build"
 
 
-🔖 Quick Reminder Checklist (for when you start):
+🔖 Quick Reminder Checklist:
  
  {}Create PixelInvadersGame.tsx component
 
