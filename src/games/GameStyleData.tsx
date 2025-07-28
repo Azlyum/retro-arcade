@@ -1,3 +1,6 @@
+// Shared positioning constant - change this to move all cabinets and signs together
+export const CABINET_VERTICAL_POSITION = "480px";
+
 export const gameColorVariants: Record<
   string,
   { glow: string; text: string; pulse: string }
@@ -28,7 +31,7 @@ export const machines = [
   {
     name: "PIXEL INVADERS",
     machineStyle: {
-      top: "41%",
+      top: CABINET_VERTICAL_POSITION,
       left: "10%",
       width: "10%",
       height: "10%",
@@ -36,7 +39,7 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-150%",
+      top: "-230px",
       left: "80%",
       transform: "translateX(-50%) rotate(4deg) skewX(9deg) skewY(2deg)",
       transformOrigin: "center",
@@ -46,7 +49,7 @@ export const machines = [
   {
     name: "BUG SQUASH",
     machineStyle: {
-      top: "42.5%",
+      top: CABINET_VERTICAL_POSITION,
       left: "31%",
       width: "8%",
       height: "8.5%",
@@ -54,8 +57,8 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-150%",
-      left: "85%",
+      top: "-210px",
+      left: "95%",
       transform: "translateX(-50%) rotate(4deg) skewX(6deg) skewY(2deg)",
       transformOrigin: "center",
     },
@@ -64,7 +67,7 @@ export const machines = [
   {
     name: "404 RUNNER",
     machineStyle: {
-      top: "43.3%",
+      top: CABINET_VERTICAL_POSITION,
       left: "46.5%",
       width: "6.5%",
       height: "7.2%",
@@ -72,8 +75,8 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-150%",
-      left: "90%",
+      top: "-180px",
+      left: "95%",
       transform: "translateX(-50%) rotate(4deg) skewX(6deg) skewY(2deg)",
       transformOrigin: "center",
     },

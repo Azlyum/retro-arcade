@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Test</title>
+  </head>
+  <body>
+    <h1>Testing Bullet Images</h1>
+    <div>
+      <h2>Player Bullet:</h2>
+      <img
+        id="playerBullet"
+        src="/images/playerBullet.png"
+        alt="Player Bullet"
+        style="border: 1px solid red"
+      />
+      <p id="playerStatus">Loading...</p>
+    </div>
+    <div>
+      <h2>Enemy Bullet:</h2>
+      <img
+        id="enemyBullet"
+        src="/images/enemyBullet.png"
+        alt="Enemy Bullet"
+        style="border: 1px solid blue"
+      />
+      <p id="enemyStatus">Loading...</p>
+    </div>
+
+    <script>
+      const playerImg = document.getElementById("playerBullet");
+      const enemyImg = document.getElementById("enemyBullet");
+      const playerStatus = document.getElementById("playerStatus");
+      const enemyStatus = document.getElementById("enemyStatus");
+
+      playerImg.onload = () => {
+        playerStatus.textContent = "Player bullet loaded successfully!";
+        playerStatus.style.color = "green";
+      };
+      playerImg.onerror = () => {
+        playerStatus.textContent = "Failed to load player bullet!";
+        playerStatus.style.color = "red";
+      };
+
+      enemyImg.onload = () => {
+        enemyStatus.textContent = "Enemy bullet loaded successfully!";
+        enemyStatus.style.color = "green";
+      };
+      enemyImg.onerror = () => {
+        enemyStatus.textContent = "Failed to load enemy bullet!";
+        enemyStatus.style.color = "red";
+      };
+    </script>
+  </body>
+</html>

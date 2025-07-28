@@ -26,7 +26,7 @@ export const allPowerUpTypes: PowerUpType[] = [
   "damage boost",
 ];
 
-const PLAYER_WIDTH = 50;
+const PLAYER_WIDTH = 100; // Match the actual player width
 
 export const usePlayerControls = (
   canvasWidth: number,
@@ -47,51 +47,48 @@ export const usePlayerControls = (
   const keysPressed = useRef<Set<string>>(new Set());
 
   const shootBullet = () => {
-    const width = bigBulletActiveRef.current ? 22 : 12;
-    const height = bigBulletActiveRef.current ? 22 : 12;
+    const width = bigBulletActiveRef.current ? 30 : 20;
+    const height = bigBulletActiveRef.current ? 30 : 20;
     const damageMultiplier = playerDamageMultiplierRef.current;
     const bigBulletDamage = bigBulletActiveRef.current ? 200 : 100;
     const doubleShotDamage = 200;
     const baseDamage = 100;
 
-    bulletsRef.current.push({
-      bulletX: playerXRef.current + 22,
-      bulletY: canvasHeight - 80,
-      width,
-      height,
-      dx: 0,
-      damage: bigBulletDamage * damageMultiplier,
-    });
-
-    if (isDoubleShotActiveRef.current) {
+    // Helper function to add a bullet
+    const addBullet = (x: number, dx: number, damage: number) => {
       bulletsRef.current.push({
-        bulletX: playerXRef.current + 10,
+        bulletX: x,
         bulletY: canvasHeight - 80,
         width,
         height,
-        dx: 0,
-        damage: doubleShotDamage * damageMultiplier,
+        dx,
+        damage: damage * damageMultiplier,
       });
+    };
+
+    // Center bullet(s)
+    if (isDoubleShotActiveRef.current) {
+      // Double shot - two center bullets
+      addBullet(playerXRef.current + 22, 0, bigBulletDamage);
+      addBullet(playerXRef.current + 10, 0, doubleShotDamage);
+    } else {
+      // Single center bullet
+      addBullet(playerXRef.current + 22, 0, bigBulletDamage);
     }
 
+    // Spread bullets
     if (isBulletSpreadActiveRef.current) {
-      bulletsRef.current.push({
-        bulletX: playerXRef.current + 22,
-        bulletY: canvasHeight - 80,
-        width,
-        height,
-        dx: -2,
-        damage: baseDamage * damageMultiplier,
-      });
-
-      bulletsRef.current.push({
-        bulletX: playerXRef.current + 22,
-        bulletY: canvasHeight - 80,
-        width,
-        height,
-        dx: 2,
-        damage: baseDamage * damageMultiplier,
-      });
+      if (isDoubleShotActiveRef.current) {
+        // Double shot + spread = 4 spread bullets (2 left, 2 right)
+        addBullet(playerXRef.current + 22, -2, baseDamage);
+        addBullet(playerXRef.current + 10, -2, baseDamage);
+        addBullet(playerXRef.current + 22, 2, baseDamage);
+        addBullet(playerXRef.current + 10, 2, baseDamage);
+      } else {
+        // Single shot + spread = 2 spread bullets
+        addBullet(playerXRef.current + 22, -2, baseDamage);
+        addBullet(playerXRef.current + 22, 2, baseDamage);
+      }
     }
   };
 
@@ -104,43 +101,6 @@ export const usePlayerControls = (
       keysPressed.current.delete(e.code);
     };
 
-    const gameLoop = () => {
-      let newX = playerXRef.current;
-      const movementSpeed = playerSpeedBoostRef.current ? 3.5 : 1.8;
-
-      if (
-        keysPressed.current.has("ArrowLeft") ||
-        keysPressed.current.has("KeyA")
-      ) {
-        newX = Math.max(newX - movementSpeed, 0);
-      }
-
-      if (
-        keysPressed.current.has("ArrowRight") ||
-        keysPressed.current.has("KeyD")
-      ) {
-        newX = Math.min(newX + movementSpeed, canvasWidth - PLAYER_WIDTH);
-      }
-
-      //! Shooting
-      const shouldShoot =
-        keysPressed.current.has("Space") || isAutoFireActiveRef.current;
-
-      if (shouldShoot) {
-        const now = Date.now();
-        if (now - lastShotTime.current > fireRateRef.current) {
-          shootBullet();
-          lastShotTime.current = now;
-        }
-      }
-
-      playerXRef.current = newX;
-      setPlayerX(newX);
-
-      requestAnimationFrame(gameLoop);
-    };
-
-    requestAnimationFrame(gameLoop);
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
 
@@ -151,7 +111,7 @@ export const usePlayerControls = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasWidth]);
 
-  return { playerX, playerXRef };
+  return { playerX, playerXRef, keysPressed, lastShotTime, shootBullet };
 };
 
 export let currentFactIndex = 0;
@@ -171,11 +131,17 @@ export const checkBulletHits = (
     for (let j = enemies.length - 1; j >= 0; j--) {
       const enemy = enemies[j];
 
+      const scale = 3;
+      const scaledWidth = enemy.width * scale;
+      const scaledHeight = enemy.height * scale;
+      const scaledX = enemy.x - (enemy.width * (scale - 1)) / 2;
+      const scaledY = enemy.y - (enemy.height * (scale - 1)) / 2;
+
       const isHit =
-        bullet.bulletX < enemy.x + enemy.width &&
-        bullet.bulletX + bullet.width > enemy.x &&
-        bullet.bulletY < enemy.y + enemy.height &&
-        bullet.bulletY + bullet.height > enemy.y;
+        bullet.bulletX < scaledX + scaledWidth &&
+        bullet.bulletX + bullet.width > scaledX &&
+        bullet.bulletY < scaledY + scaledHeight &&
+        bullet.bulletY + bullet.height > scaledY;
 
       if (isHit) {
         enemy.health -= bullet.damage;
@@ -188,9 +154,11 @@ export const checkBulletHits = (
 
           const text =
             portfolioFacts[currentFactIndex++ % portfolioFacts.length];
+
+          // Add to floating text (original behavior)
           floatingText.current.push({
-            x: enemy.x,
-            y: enemy.y,
+            x: scaledX + scaledWidth / 2,
+            y: scaledY + scaledHeight / 2,
             textPortfolio: text,
             opacity: 1,
             lifespan: 60,
@@ -199,8 +167,8 @@ export const checkBulletHits = (
 
           const droppingPowerUps =
             allPowerUpTypes[Math.floor(Math.random() * allPowerUpTypes.length)];
-          const powerUpDropChance = 0.07;
-          const maxActivePowerUps = 2;
+          const powerUpDropChance = 0.15; // Increased drop chance
+          const maxActivePowerUps = 3; // Increased max power-ups
 
           if (
             Math.random() < powerUpDropChance &&
@@ -208,8 +176,8 @@ export const checkBulletHits = (
           ) {
             powerUp.current.push({
               power: droppingPowerUps,
-              x: enemy.x,
-              y: enemy.y,
+              x: scaledX + scaledWidth / 2 - 16, // Center the power-up on the enemy
+              y: scaledY + scaledHeight / 2 - 16,
               height: 32,
               width: 32,
               opacity: 1,

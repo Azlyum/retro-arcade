@@ -7,6 +7,21 @@ export type FloatingText = {
   lifespan: number;
 };
 
+export type SideFact = {
+  text: string;
+  count: number;
+  score: number;
+  y: number;
+  opacity: number;
+  lifespan: number;
+};
+
+export type RetroFact = {
+  text: string;
+  discovered: boolean;
+  index: number;
+};
+
 export const portfolioFacts = [
   "Custom Game Engine w/ Canvas 🎮",
   "Built Debugger Mode from Scratch 🛠️",

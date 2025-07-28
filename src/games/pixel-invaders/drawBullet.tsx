@@ -15,10 +15,24 @@ export interface EnemyBullet {
   enemyBulletdx?: number;
 }
 
-export const drawBullet = (ctx: CanvasRenderingContext2D, bullet: Bullet[]) => {
-  ctx.fillStyle = "#008000";
+export const drawBullet = (
+  ctx: CanvasRenderingContext2D,
+  bullet: Bullet[],
+  playerBulletImage: HTMLImageElement | null
+) => {
   bullet.forEach((bullet) => {
-    ctx.fillRect(bullet.bulletX, bullet.bulletY, bullet.width, bullet.height);
+    if (playerBulletImage && playerBulletImage.complete) {
+      ctx.drawImage(
+        playerBulletImage,
+        bullet.bulletX,
+        bullet.bulletY,
+        bullet.width,
+        bullet.height
+      );
+    } else {
+      ctx.fillStyle = "#00ff00";
+      ctx.fillRect(bullet.bulletX, bullet.bulletY, bullet.width, bullet.height);
+    }
   });
 };
 
@@ -39,16 +53,27 @@ export const updateBullets = (
 
 export const drawEnemyBullets = (
   ctx: CanvasRenderingContext2D,
-  bullets: EnemyBullet[]
+  bullets: EnemyBullet[],
+  enemyBulletImage: HTMLImageElement | null
 ) => {
-  ctx.fillStyle = "#FF0000";
   bullets.forEach((bullet) => {
-    ctx.fillRect(
-      bullet.enemyBulletX,
-      bullet.enemyBulletY,
-      bullet.enemyBulletwidth,
-      bullet.enemyBulletheight
-    );
+    if (enemyBulletImage && enemyBulletImage.complete) {
+      ctx.drawImage(
+        enemyBulletImage,
+        bullet.enemyBulletX,
+        bullet.enemyBulletY,
+        bullet.enemyBulletwidth,
+        bullet.enemyBulletheight
+      );
+    } else {
+      ctx.fillStyle = "#ff0000";
+      ctx.fillRect(
+        bullet.enemyBulletX,
+        bullet.enemyBulletY,
+        bullet.enemyBulletwidth,
+        bullet.enemyBulletheight
+      );
+    }
   });
 };
 

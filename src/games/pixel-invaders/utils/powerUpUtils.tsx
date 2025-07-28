@@ -22,15 +22,15 @@ export type PowerUp = {
 };
 
 export const powerUpIconMap: Record<string, string> = {
-  shield: require("../assets/powerUps/shield.png"),
-  "rapid fire": require("../assets/powerUps/rapidFire.png"),
-  "double shot": require("../assets/powerUps/doubleBullets.png"),
-  "big bullets": require("../assets/powerUps/bigBullets.png"),
-  "speed boost": require("../assets/powerUps/speedBoost.png"),
-  "bullet spread": require("../assets/powerUps/bulletSpread.png"),
-  "freeze enemies": require("../assets/powerUps/freezeEnemies.png"),
-  "score boost": require("../assets/powerUps/scoreBoost.png"),
-  "slow motion": require("../assets/powerUps/slowMotion.png"),
-  "auto fire": require("../assets/powerUps/autoFire.png"),
-  "damage boost": require("../assets/powerUps/damageBoost.png"),
+  shield: "/images/powerUps/shield.png",
+  "rapid fire": "/images/powerUps/rapidFire.png",
+  "double shot": "/images/powerUps/doubleBullets.png",
+  "big bullets": "/images/powerUps/bigBullets.png",
+  "speed boost": "/images/powerUps/speedBoost.png",
+  "bullet spread": "/images/powerUps/bulletSpread.png",
+  "freeze enemies": "/images/powerUps/freezeEnemies.png",
+  "score boost": "/images/powerUps/scoreBoost.png",
+  "slow motion": "/images/powerUps/slowMotion.png",
+  "auto fire": "/images/powerUps/autoFire.png",
+  "damage boost": "/images/powerUps/damageBoost.png",
 };
