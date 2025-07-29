@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { usePlayerControls, checkBulletHits } from "./gameLogic.tsx";
-import { drawPlayer } from "./drawPlayer.tsx";
+import { usePlayerControls, checkBulletHits } from "./gameLogic";
+import { drawPlayer } from "./drawPlayer";
 import {
   Enemy,
   createEnemies,
   drawEnemies,
   updateEnemies,
-} from "./drawEnemies.tsx";
+} from "./drawEnemies";
 import {
   Bullet,
   drawBullet,
@@ -14,9 +14,9 @@ import {
   EnemyBullet,
   updateBullets,
   updateEnemyBullets,
-} from "./drawBullet.tsx";
-import { FloatingText } from "./utils/floatingTextArray.tsx";
-import { PowerUp, powerUpIconMap } from "./utils/powerUpUtils.tsx";
+} from "./drawBullet";
+import { FloatingText } from "./utils/floatingTextArray";
+import { PowerUp, powerUpIconMap } from "./utils/powerUpUtils";
 
 export const Canvas = ({
   onGameOver,

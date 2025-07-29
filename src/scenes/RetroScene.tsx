@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
-import { ArcadeMachineScreens } from "../components/arcade-machines/ArcadeMachineScreens.tsx";
-import { machines } from "../games/GameStyleData.tsx";
-import { Signs } from "../components/signs/Signs.tsx";
-import { PixelInvadersStartScreen } from "../games/pixel-invaders/pixelInvadersGame.tsx";
+import { ArcadeMachineScreens } from "../components/arcade-machines/ArcadeMachineScreens";
+import { machines } from "../games/GameStyleData";
+import { Signs } from "../components/signs/Signs";
+import { PixelInvadersStartScreen } from "../games/pixel-invaders/pixelInvadersGame";
 
 const RetroScene = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);

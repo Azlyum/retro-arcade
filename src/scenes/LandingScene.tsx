@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
-import { ArcadeLandingMachineScreen } from "../components/arcade-machines/ArcadeMachineScreens.tsx";
-import { useArcadeStore } from "../state/useArcadeStore.tsx";
+import { ArcadeLandingMachineScreen } from "../components/arcade-machines/ArcadeMachineScreens";
+import { useArcadeStore } from "../state/useArcadeStore";
 
 type LandingPageProps = {
   onTransitionEnd: () => void;
