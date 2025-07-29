@@ -1,8 +1,8 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { Bullet } from "./drawBullet";
 import { Enemy } from "./drawEnemies";
-import { FloatingText, portfolioFacts } from "./utils/floatingTextArray.tsx";
-import { PowerUp, PowerUpType } from "./utils/powerUpUtils.tsx";
+import { FloatingText, portfolioFacts } from "./utils/floatingTextArray";
+import { PowerUp, PowerUpType } from "./utils/powerUpUtils";
 
 // weighted array
 export const allPowerUpTypes: PowerUpType[] = [

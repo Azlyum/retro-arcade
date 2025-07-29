@@ -1,5 +1,5 @@
 import React from "react";
-import { gameColorVariants } from "../../games/GameStyleData.tsx";
+import { gameColorVariants } from "../../games/GameStyleData";
 
 interface ArcadeMachineScreensI {
   className?: string;
