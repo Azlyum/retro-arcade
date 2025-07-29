@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Canvas } from "./gameCanvas.tsx";
+import { Canvas } from "./gameCanvas.tsx"; //<-- fix
 
 export const PixelInvadersStartScreen = () => {
   const [gameState, setGameState] = useState<"start" | "playing" | "gameOver">(

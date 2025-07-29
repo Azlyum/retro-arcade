@@ -20,13 +20,6 @@ yarn-error.log*
 .env.local
 .env.*.local
 
-# Editor directories and files
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 
 # System files
 .DS_Store
