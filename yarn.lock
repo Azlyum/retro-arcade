@@ -5727,7 +5727,7 @@ hoopy@^0.1.4:
 
 howler@^2.2.4:
   version "2.2.4"
-  resolved "https://registry.npmjs.org/howler/-/howler-2.2.4.tgz"
+  resolved "https://registry.npmjs.org/howler/-/howler-2.2.4.tgz#bd3df4a4f68a0118a51e4bd84a2bfc2e93e6e5a1"
   integrity sha512-iARIBPgcQrwtEr+tALF+rapJ8qSc+Set2GJQl7xT1MQzWaVkFebdJhR3alVlSiUf5U7nAANKuj3aWpwerocD5w==
 
 hpack.js@^2.1.6:
