@@ -56,14 +56,17 @@ export const usePlayerControls = (
 
     // Helper function to add a bullet
     const addBullet = (x: number, dx: number, damage: number) => {
-      bulletsRef.current.push({
+      const newBullet = {
         bulletX: x,
         bulletY: canvasHeight - 80,
         width,
         height,
         dx,
         damage: damage * damageMultiplier,
-      });
+      };
+      console.log("Adding bullet:", newBullet);
+      bulletsRef.current.push(newBullet);
+      console.log("Bullets count after adding:", bulletsRef.current.length);
     };
 
     // Center bullet(s)
