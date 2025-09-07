@@ -1,10 +1,10 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { Bullet } from "./drawBullet";
+import { AudioManager } from "./audioManager";
 import { Enemy } from "./drawEnemies";
 import { FloatingText, portfolioFacts } from "./utils/floatingTextArray";
 import { PowerUp, PowerUpType } from "./utils/powerUpUtils";
 
-// weighted array
 export const allPowerUpTypes: PowerUpType[] = [
   "shield",
   "rapid fire",
@@ -26,7 +26,7 @@ export const allPowerUpTypes: PowerUpType[] = [
   "damage boost",
 ];
 
-const PLAYER_WIDTH = 100; // Match the actual player width
+const PLAYER_WIDTH = 100;
 
 export const usePlayerControls = (
   canvasWidth: number,
@@ -40,21 +40,21 @@ export const usePlayerControls = (
   isAutoFireActiveRef: React.RefObject<boolean>,
   playerDamageMultiplierRef: React.RefObject<number>
 ) => {
-  const [playerX, setPlayerX] = useState((canvasWidth - PLAYER_WIDTH) / 2);
+  const [playerX] = useState((canvasWidth - PLAYER_WIDTH) / 2);
   const playerXRef = useRef(playerX);
   const lastShotTime = useRef(0);
 
   const keysPressed = useRef<Set<string>>(new Set());
 
   const shootBullet = () => {
+    AudioManager.play("shooting");
+
     const width = bigBulletActiveRef.current ? 30 : 20;
     const height = bigBulletActiveRef.current ? 30 : 20;
     const damageMultiplier = playerDamageMultiplierRef.current;
     const bigBulletDamage = bigBulletActiveRef.current ? 200 : 100;
     const doubleShotDamage = 200;
-    const baseDamage = 100;
 
-    // Helper function to add a bullet
     const addBullet = (x: number, dx: number, damage: number) => {
       const newBullet = {
         bulletX: x,
@@ -64,33 +64,25 @@ export const usePlayerControls = (
         dx,
         damage: damage * damageMultiplier,
       };
-      console.log("Adding bullet:", newBullet);
       bulletsRef.current.push(newBullet);
-      console.log("Bullets count after adding:", bulletsRef.current.length);
     };
 
-    // Center bullet(s)
     if (isDoubleShotActiveRef.current) {
-      // Double shot - two center bullets
       addBullet(playerXRef.current + 22, 0, bigBulletDamage);
       addBullet(playerXRef.current + 10, 0, doubleShotDamage);
     } else {
-      // Single center bullet
       addBullet(playerXRef.current + 22, 0, bigBulletDamage);
     }
 
-    // Spread bullets
     if (isBulletSpreadActiveRef.current) {
       if (isDoubleShotActiveRef.current) {
-        // Double shot + spread = 4 spread bullets (2 left, 2 right)
-        addBullet(playerXRef.current + 22, -2, baseDamage);
-        addBullet(playerXRef.current + 10, -2, baseDamage);
-        addBullet(playerXRef.current + 22, 2, baseDamage);
-        addBullet(playerXRef.current + 10, 2, baseDamage);
+        addBullet(playerXRef.current + 22, -2, bigBulletDamage);
+        addBullet(playerXRef.current + 10, -2, doubleShotDamage);
+        addBullet(playerXRef.current + 22, 2, bigBulletDamage);
+        addBullet(playerXRef.current + 10, 2, doubleShotDamage);
       } else {
-        // Single shot + spread = 2 spread bullets
-        addBullet(playerXRef.current + 22, -2, baseDamage);
-        addBullet(playerXRef.current + 22, 2, baseDamage);
+        addBullet(playerXRef.current + 22, -2, bigBulletDamage);
+        addBullet(playerXRef.current + 22, 2, bigBulletDamage);
       }
     }
   };
@@ -126,7 +118,8 @@ export const checkBulletHits = (
   floatingText: React.RefObject<FloatingText[]>,
   powerUp: React.RefObject<PowerUp[]>,
   isScoreBoostActiveRef: React.RefObject<boolean>,
-  waveRef: React.RefObject<number>
+  waveRef: React.RefObject<number>,
+  onEnemyDeath?: (x: number, y: number, intensity: number) => void
 ) => {
   for (let i = bullets.length - 1; i >= 0; i--) {
     const bullet = bullets[i];
@@ -150,6 +143,7 @@ export const checkBulletHits = (
         enemy.health -= bullet.damage;
         bullets.splice(i, 1);
         if (enemy.health <= 0) {
+          AudioManager.play("enemyDeath");
           enemies.splice(j, 1);
           scoreRef.current += isScoreBoostActiveRef.current
             ? 20 + waveRef.current * 2
@@ -158,7 +152,6 @@ export const checkBulletHits = (
           const text =
             portfolioFacts[currentFactIndex++ % portfolioFacts.length];
 
-          // Add to floating text (original behavior)
           floatingText.current.push({
             x: scaledX + scaledWidth / 2,
             y: scaledY + scaledHeight / 2,
@@ -168,10 +161,21 @@ export const checkBulletHits = (
             text,
           });
 
+          if (onEnemyDeath) {
+            const centerX = scaledX + scaledWidth / 2;
+            const centerY = scaledY + scaledHeight / 2;
+            // Scale intensity by enemy durability but dampen by wave to avoid excessive shake later
+            const base = Math.max(3, enemy.maxHealth / 25);
+            const waveDampen =
+              1 / (1 + Math.max(0, waveRef.current - 1) * 0.08);
+            const intensity = Math.min(8, base * waveDampen);
+            onEnemyDeath(centerX, centerY, intensity);
+          }
+
           const droppingPowerUps =
             allPowerUpTypes[Math.floor(Math.random() * allPowerUpTypes.length)];
-          const powerUpDropChance = 0.15; // Increased drop chance
-          const maxActivePowerUps = 3; // Increased max power-ups
+          const powerUpDropChance = 0.15;
+          const maxActivePowerUps = 3;
 
           if (
             Math.random() < powerUpDropChance &&
@@ -179,7 +183,7 @@ export const checkBulletHits = (
           ) {
             powerUp.current.push({
               power: droppingPowerUps,
-              x: scaledX + scaledWidth / 2 - 16, // Center the power-up on the enemy
+              x: scaledX + scaledWidth / 2 - 16,
               y: scaledY + scaledHeight / 2 - 16,
               height: 32,
               width: 32,

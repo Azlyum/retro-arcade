@@ -61,10 +61,8 @@ export const drawPlayer = (
     ctx.closePath();
     ctx.stroke();
 
-    // Reset line dash
     ctx.setLineDash([]);
 
-    // Add shield particles/energy effect
     for (let i = 0; i < 8; i++) {
       const angle = (i / 8) * Math.PI * 2 + time * 0.5;
       const distance = 70 + Math.sin(time * 2 + i) * 10;

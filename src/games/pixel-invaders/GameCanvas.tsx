@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Howl } from "howler";
 import { usePlayerControls, checkBulletHits } from "./gameLogic";
 import { drawPlayer } from "./drawPlayer";
 import {
@@ -16,7 +17,9 @@ import {
   updateEnemyBullets,
 } from "./drawBullet";
 import { FloatingText } from "./utils/floatingTextArray";
+import { AudioManager } from "./audioManager";
 import { PowerUp, powerUpIconMap } from "./utils/powerUpUtils";
+import { getCachedImage } from "./utils/imageCache";
 
 export const Canvas = ({
   onGameOver,
@@ -46,8 +49,8 @@ export const Canvas = ({
   const permanentDamageBoostsRef = useRef(0);
   const activePowerUpsRef = useRef<{ power: string; expiration: number }[]>([]);
 
-  // Add timer management for power-ups
-  const activeTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const activeTimersRef = useRef<Map<string, number>>(new Map());
+  const enemyShootingSoundRef = useRef<Howl | null>(null);
 
   const { playerXRef, keysPressed, lastShotTime, shootBullet } =
     usePlayerControls(
@@ -70,6 +73,17 @@ export const Canvas = ({
   const gameOverTriggeredRef = useRef(false);
   const floatingTextsRef = useRef<FloatingText[]>([]);
   const powerUpsRef = useRef<PowerUp[]>([]);
+  const explosionsRef = useRef<
+    { x: number; y: number; r: number; life: number }[]
+  >([]);
+  const shakeRef = useRef<{ t: number; mag: number; base: number }>({
+    t: 0,
+    mag: 0,
+    base: 0,
+  });
+  const muzzleFlashesRef = useRef<
+    { x: number; y: number; r: number; life: number }[]
+  >([]);
 
   useEffect(() => {
     enemiesRef.current = createEnemies(3, 6, waveRef.current);
@@ -77,51 +91,40 @@ export const Canvas = ({
 
   useEffect(() => {
     const loadImages = () => {
-      console.log("Loading bullet images...");
-
-      // Load player bullet image
       const playerBulletImg = new Image();
       playerBulletImg.onload = () => {
-        console.log("Player bullet image loaded successfully");
         playerBulletImageRef.current = playerBulletImg;
       };
-      playerBulletImg.onerror = (error) => {
-        console.error("Failed to load player bullet image:", error);
-      };
+      playerBulletImg.onerror = () => {};
       playerBulletImg.src = "/images/playerBullet.png";
 
-      // Load enemy bullet image
       const enemyBulletImg = new Image();
       enemyBulletImg.onload = () => {
-        console.log("Enemy bullet image loaded successfully");
         enemyBulletImageRef.current = enemyBulletImg;
       };
-      enemyBulletImg.onerror = (error) => {
-        console.error("Failed to load enemy bullet image:", error);
-      };
+      enemyBulletImg.onerror = () => {};
       enemyBulletImg.src = "/images/enemyBullet.png";
     };
 
+    enemyShootingSoundRef.current = null;
+
     loadImages();
 
-    // Cleanup function to clear all active timers when component unmounts
+    const timers = activeTimersRef.current;
     return () => {
-      activeTimersRef.current.forEach((timer) => {
+      timers.forEach((timer) => {
         clearTimeout(timer);
       });
-      activeTimersRef.current.clear();
+      timers.clear();
     };
   }, []);
 
-  // Function to clear all power-ups and timers
   const clearAllPowerUps = () => {
-    // Clear all active timers
     activeTimersRef.current.forEach((timer) => {
       clearTimeout(timer);
     });
     activeTimersRef.current.clear();
 
-    // Reset all power-up states
     isShieldActiveRef.current = false;
     isDoubleShotActiveRef.current = false;
     isBigBulletActiveRef.current = false;
@@ -133,13 +136,13 @@ export const Canvas = ({
     isAutoFireActiveRef.current = false;
     fireRateRef.current = 400;
 
-    // Clear active power-ups list
     activePowerUpsRef.current = [];
   };
 
   const activatePowerUp = (power: string) => {
     const duration = 15000;
     const expiration = Date.now() + duration;
+    AudioManager.play("powerPickup");
 
     if (power === "shield") {
       if (isShieldActiveRef.current) {
@@ -151,183 +154,55 @@ export const Canvas = ({
       }
     }
 
+    if (power === "damage boost") {
+      permanentDamageBoostsRef.current += 1;
+      playerDamageMultiplierRef.current += 0.5;
+      activePowerUpsRef.current.push({ power, expiration: Infinity });
+      return;
+    }
+
     const existingPowerUp = activePowerUpsRef.current.find(
       (p) => p.power === power
     );
 
-    // Helper function to clear existing timer for a power-up
-    const clearExistingTimer = (powerType: string) => {
-      const existingTimer = activeTimersRef.current.get(powerType);
-      if (existingTimer) {
-        clearTimeout(existingTimer);
-        activeTimersRef.current.delete(powerType);
+    const applyPowerUpEffect = (powerType: string) => {
+      switch (powerType) {
+        case "rapid fire":
+          fireRateRef.current = 150;
+          break;
+        case "double shot":
+          isDoubleShotActiveRef.current = true;
+          break;
+        case "big bullets":
+          isBigBulletActiveRef.current = true;
+          break;
+        case "speed boost":
+          isPlayerSpeedBoostActiveRef.current = true;
+          break;
+        case "bullet spread":
+          isBulletSpreadActiveRef.current = true;
+          break;
+        case "freeze enemies":
+          isFreezeEnemiesActiveRef.current = true;
+          break;
+        case "score boost":
+          isScoreBoostActiveRef.current = true;
+          break;
+        case "slow motion":
+          isSlowMotionActiveRef.current = true;
+          break;
+        case "auto fire":
+          isAutoFireActiveRef.current = true;
+          break;
       }
     };
 
     if (existingPowerUp) {
-      // Clear existing timer before setting new one
-      clearExistingTimer(power);
       existingPowerUp.expiration = expiration;
-
-      switch (power) {
-        case "rapid fire":
-          fireRateRef.current = 150;
-          const rapidFireTimer = setTimeout(
-            () => (fireRateRef.current = 400),
-            duration
-          );
-          activeTimersRef.current.set(power, rapidFireTimer);
-          break;
-        case "double shot":
-          isDoubleShotActiveRef.current = true;
-          const doubleShotTimer = setTimeout(
-            () => (isDoubleShotActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, doubleShotTimer);
-          break;
-        case "big bullets":
-          isBigBulletActiveRef.current = true;
-          const bigBulletTimer = setTimeout(
-            () => (isBigBulletActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, bigBulletTimer);
-          break;
-        case "speed boost":
-          isPlayerSpeedBoostActiveRef.current = true;
-          const speedBoostTimer = setTimeout(
-            () => (isPlayerSpeedBoostActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, speedBoostTimer);
-          break;
-        case "bullet spread":
-          isBulletSpreadActiveRef.current = true;
-          const bulletSpreadTimer = setTimeout(
-            () => (isBulletSpreadActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, bulletSpreadTimer);
-          break;
-        case "freeze enemies":
-          isFreezeEnemiesActiveRef.current = true;
-          const freezeEnemiesTimer = setTimeout(
-            () => (isFreezeEnemiesActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, freezeEnemiesTimer);
-          break;
-        case "score boost":
-          isScoreBoostActiveRef.current = true;
-          const scoreBoostTimer = setTimeout(
-            () => (isScoreBoostActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, scoreBoostTimer);
-          break;
-        case "slow motion":
-          isSlowMotionActiveRef.current = true;
-          const slowMotionTimer = setTimeout(
-            () => (isSlowMotionActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, slowMotionTimer);
-          break;
-        case "auto fire":
-          isAutoFireActiveRef.current = true;
-          const autoFireTimer = setTimeout(
-            () => (isAutoFireActiveRef.current = false),
-            duration
-          );
-          activeTimersRef.current.set(power, autoFireTimer);
-          break;
-        case "damage boost":
-          return;
-      }
       return;
     }
 
-    switch (power) {
-      case "rapid fire":
-        fireRateRef.current = 150;
-        const rapidFireTimer = setTimeout(
-          () => (fireRateRef.current = 400),
-          duration
-        );
-        activeTimersRef.current.set(power, rapidFireTimer);
-        break;
-      case "double shot":
-        isDoubleShotActiveRef.current = true;
-        const doubleShotTimer = setTimeout(
-          () => (isDoubleShotActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, doubleShotTimer);
-        break;
-      case "big bullets":
-        isBigBulletActiveRef.current = true;
-        const bigBulletTimer = setTimeout(
-          () => (isBigBulletActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, bigBulletTimer);
-        break;
-      case "speed boost":
-        isPlayerSpeedBoostActiveRef.current = true;
-        const speedBoostTimer = setTimeout(
-          () => (isPlayerSpeedBoostActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, speedBoostTimer);
-        break;
-      case "bullet spread":
-        isBulletSpreadActiveRef.current = true;
-        const bulletSpreadTimer = setTimeout(
-          () => (isBulletSpreadActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, bulletSpreadTimer);
-        break;
-      case "freeze enemies":
-        isFreezeEnemiesActiveRef.current = true;
-        const freezeEnemiesTimer = setTimeout(
-          () => (isFreezeEnemiesActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, freezeEnemiesTimer);
-        break;
-      case "score boost":
-        isScoreBoostActiveRef.current = true;
-        const scoreBoostTimer = setTimeout(
-          () => (isScoreBoostActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, scoreBoostTimer);
-        break;
-      case "slow motion":
-        isSlowMotionActiveRef.current = true;
-        const slowMotionTimer = setTimeout(
-          () => (isSlowMotionActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, slowMotionTimer);
-        break;
-      case "auto fire":
-        isAutoFireActiveRef.current = true;
-        const autoFireTimer = setTimeout(
-          () => (isAutoFireActiveRef.current = false),
-          duration
-        );
-        activeTimersRef.current.set(power, autoFireTimer);
-        break;
-      case "damage boost":
-        permanentDamageBoostsRef.current += 1;
-        playerDamageMultiplierRef.current += 0.5;
-        activePowerUpsRef.current.push({ power, expiration: Infinity });
-        return;
-    }
-
+    applyPowerUpEffect(power);
     activePowerUpsRef.current.push({ power, expiration });
   };
 
@@ -346,6 +221,7 @@ export const Canvas = ({
       setCanvasHeight(newHeight);
     };
 
+    let rafId = 0;
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const playerY = canvas.height - 100;
@@ -368,13 +244,20 @@ export const Canvas = ({
       }
 
       const shouldShoot =
-        keysPressed.current.has("Space") || isAutoFireActiveRef.current;
+        (keysPressed.current.has("Space") || isAutoFireActiveRef.current) &&
+        !gameOverTriggeredRef.current;
 
       if (shouldShoot) {
         const now = Date.now();
         if (now - lastShotTime.current > fireRateRef.current) {
           shootBullet();
           lastShotTime.current = now;
+          muzzleFlashesRef.current.push({
+            x: playerXRef.current + 50,
+            y: playerY + 10,
+            r: 6,
+            life: 6,
+          });
         }
       }
 
@@ -384,7 +267,8 @@ export const Canvas = ({
       if (
         enemiesRef.current.length > 0 &&
         now - lastEnemyShotTimeRef.current > enemyFireRateRef.current &&
-        enemyBulletsRef.current.length < 5
+        enemyBulletsRef.current.length < 5 &&
+        !gameOverTriggeredRef.current
       ) {
         const columnMap = new Map<number, Enemy>();
 
@@ -402,6 +286,7 @@ export const Canvas = ({
           bottomEnemies[Math.floor(Math.random() * bottomEnemies.length)];
 
         if (shooter) {
+          AudioManager.play("shooting");
           enemyBulletsRef.current.push({
             enemyBulletX: shooter.x + shooter.width / 2,
             enemyBulletY: shooter.y + shooter.height,
@@ -424,7 +309,6 @@ export const Canvas = ({
         waveRef
       );
 
-      // Draw bullets BEFORE updating them (so they're visible before being filtered out)
       drawBullet(ctx, bulletsRef.current, playerBulletImageRef.current);
       drawEnemyBullets(
         ctx,
@@ -432,7 +316,6 @@ export const Canvas = ({
         enemyBulletImageRef.current
       );
 
-      // Update bullets after drawing them
       bulletsRef.current = updateBullets(
         bulletsRef.current,
         isSlowMotionActiveRef
@@ -452,7 +335,14 @@ export const Canvas = ({
         floatingTextsRef,
         powerUpsRef,
         isScoreBoostActiveRef,
-        waveRef
+        waveRef,
+        (cx, cy, intensity) => {
+          // explosion
+          explosionsRef.current.push({ x: cx, y: cy, r: 10, life: 18 });
+          // screen shake
+          const mag = intensity * 0.45;
+          shakeRef.current = { t: 12, mag, base: mag };
+        }
       );
 
       const drawPowerUpHUD = (ctx: CanvasRenderingContext2D) => {
@@ -466,12 +356,41 @@ export const Canvas = ({
           (p) => p.expiration !== Infinity && p.expiration <= now
         );
 
-        // Clear timers for expired power-ups
         expiredPowerUps.forEach((powerUp) => {
           const timer = activeTimersRef.current.get(powerUp.power);
           if (timer) {
             clearTimeout(timer);
             activeTimersRef.current.delete(powerUp.power);
+          }
+
+          switch (powerUp.power) {
+            case "rapid fire":
+              fireRateRef.current = 400;
+              break;
+            case "double shot":
+              isDoubleShotActiveRef.current = false;
+              break;
+            case "big bullets":
+              isBigBulletActiveRef.current = false;
+              break;
+            case "speed boost":
+              isPlayerSpeedBoostActiveRef.current = false;
+              break;
+            case "bullet spread":
+              isBulletSpreadActiveRef.current = false;
+              break;
+            case "freeze enemies":
+              isFreezeEnemiesActiveRef.current = false;
+              break;
+            case "score boost":
+              isScoreBoostActiveRef.current = false;
+              break;
+            case "slow motion":
+              isSlowMotionActiveRef.current = false;
+              break;
+            case "auto fire":
+              isAutoFireActiveRef.current = false;
+              break;
           }
         });
 
@@ -483,8 +402,7 @@ export const Canvas = ({
           const iconPath = powerUpIconMap[powerUp.power];
           if (!iconPath) return;
 
-          const img = new Image();
-          img.src = iconPath;
+          const img = getCachedImage(iconPath);
 
           const alpha = Math.max(0.3, (powerUp.expiration - now) / 15000);
 
@@ -520,7 +438,61 @@ export const Canvas = ({
         });
       };
 
-      drawEnemies(ctx, enemiesRef.current);
+      // apply screen shake
+      if (shakeRef.current.t > 0) {
+        const s = shakeRef.current;
+        // ease in/out using a sine curve over lifetime
+        const lifeRatio = s.t / 14; // 14 frames total
+        const ease = Math.sin(lifeRatio * Math.PI);
+        const currentMag = s.base * ease;
+        const dx = (Math.random() - 0.5) * currentMag;
+        const dy = (Math.random() - 0.5) * currentMag;
+        ctx.save();
+        ctx.translate(dx, dy);
+        drawEnemies(ctx, enemiesRef.current);
+        ctx.restore();
+        s.t -= 1;
+        s.mag = Math.max(0, currentMag * 0.95);
+      } else {
+        drawEnemies(ctx, enemiesRef.current);
+      }
+      // explosions
+      explosionsRef.current.forEach((e) => {
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        const alpha = Math.max(0, e.life / 18);
+        const grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r);
+        grd.addColorStop(0, `rgba(255,200,80,${alpha})`);
+        grd.addColorStop(1, `rgba(255,0,0,0)`);
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        e.r += 2.2;
+        e.life -= 1;
+      });
+      explosionsRef.current = explosionsRef.current.filter((e) => e.life > 0);
+
+      // muzzle flashes
+      muzzleFlashesRef.current.forEach((f) => {
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        const alpha = Math.max(0, f.life / 6);
+        const grd = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r);
+        grd.addColorStop(0, `rgba(255,255,200,${alpha})`);
+        grd.addColorStop(1, `rgba(255,255,0,0)`);
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        f.r += 1.5;
+        f.life -= 1;
+      });
+      muzzleFlashesRef.current = muzzleFlashesRef.current.filter(
+        (f) => f.life > 0
+      );
       drawPlayer(
         ctx,
         playerXRef.current,
@@ -545,8 +517,7 @@ export const Canvas = ({
         const iconPath = powerUpIconMap[power.power];
         if (!iconPath) return;
 
-        const img = new Image();
-        img.src = iconPath;
+        const img = getCachedImage(iconPath);
 
         if (img.complete && img.naturalWidth > 0) {
           ctx.drawImage(img, power.x, power.y, 32, 32);
@@ -573,6 +544,7 @@ export const Canvas = ({
 
         if (isColliding) {
           activatePowerUp(p.power);
+          AudioManager.play("powerPickup");
           floatingTextsRef.current.push({
             x: p.x,
             y: p.y,
@@ -645,6 +617,11 @@ export const Canvas = ({
               (p) => p.power !== "shield"
             );
           } else {
+            const playerDeath = new Howl({
+              src: ["/sounds/pixel-invaders/player_death.mp3"],
+              volume: 0.2,
+            });
+            playerDeath.play();
             gameOverTriggeredRef.current = true;
             clearAllPowerUps();
             onGameOver(scoreRef.current);
@@ -700,16 +677,16 @@ export const Canvas = ({
         });
       }
 
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     };
 
     resizeCanvas();
     draw();
 
     window.addEventListener("resize", resizeCanvas);
-
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+      if (rafId) cancelAnimationFrame(rafId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onGameOver, playerXRef]);
