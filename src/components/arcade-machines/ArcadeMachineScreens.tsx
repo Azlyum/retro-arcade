@@ -41,6 +41,33 @@ export const PixelInvadersScreen: React.FC = () => {
   );
 };
 
+export const BugSquashScreen: React.FC = () => {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="relative bottom-6 w-[260px] h-[120px] bg-black p-1 border-2 border-green-900 shadow-neonGreen overflow-hidden rounded-xl">
+        {/* 3x3 grid preview with a bug */}
+        <div className="grid grid-cols-3 gap-1 w-full h-full p-2">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div
+              key={i}
+              className="relative border border-green-800 bg-slate-900/80 rounded"
+            >
+              {i === 4 && (
+                <div className="absolute inset-0 flex items-center justify-center text-lg">
+                  🐛
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="absolute top-1 left-1 text-green-300 text-[10px] font-arcade">
+          SQUASH 'EM!
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const ArcadeLandingMachineScreen: React.FC = () => {
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -74,13 +101,22 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
       <div className="relative w-full h-full">
         {nameSigns}
 
-        {/* Game screen preview for Pixel Invaders - positioned on the cabinet */}
+        {/* Game screen preview zones */}
         {name === "PIXEL INVADERS" && (
           <div
             onClick={onClick}
             className="absolute top-[50%] left-[5%] w-[90%] h-[25%] z-0 cursor-pointer"
           >
             <PixelInvadersScreen />
+          </div>
+        )}
+
+        {name === "BUG SQUASH" && (
+          <div
+            onClick={onClick}
+            className="absolute top-[50%] left-[5%] w-[90%] h-[25%] z-0 cursor-pointer"
+          >
+            <BugSquashScreen />
           </div>
         )}
 

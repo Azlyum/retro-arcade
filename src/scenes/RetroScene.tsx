@@ -5,13 +5,14 @@ import { ArcadeMachineScreens } from "../components/arcade-machines/ArcadeMachin
 import { machines } from "../games/GameStyleData";
 import { Signs } from "../components/signs/Signs";
 import { PixelInvadersStartScreen } from "../games/pixel-invaders/pixelInvadersGame";
+import BugSquash from "../games/bugSquash/bugSquash";
 
 const RetroScene = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
 
   const handleGameClick = (gameName: string) => {
-    if (gameName === "PIXEL INVADERS") {
+    if (gameName === "PIXEL INVADERS" || gameName === "BUG SQUASH") {
       setSelectedGame(gameName);
       setIsZoomed(true);
 
@@ -68,7 +69,7 @@ const RetroScene = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {isZoomed && selectedGame === "PIXEL INVADERS" && (
+        {isZoomed && selectedGame && (
           <motion.div
             initial={{ scale: 1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -91,7 +92,10 @@ const RetroScene = () => {
                   >
                     X
                   </button>
-                  <PixelInvadersStartScreen />
+                  {selectedGame === "PIXEL INVADERS" && (
+                    <PixelInvadersStartScreen />
+                  )}
+                  {selectedGame === "BUG SQUASH" && <BugSquash />}
                 </div>
               </motion.div>
             </div>
