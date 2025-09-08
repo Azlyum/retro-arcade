@@ -1,5 +1,5 @@
 // Shared positioning constant - change this to move all cabinets and signs together
-export const CABINET_VERTICAL_POSITION = "480px";
+export const CABINET_VERTICAL_POSITION = "580px";
 
 export const gameColorVariants: Record<
   string,

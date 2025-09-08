@@ -96,14 +96,14 @@ export const Canvas = ({
         playerBulletImageRef.current = playerBulletImg;
       };
       playerBulletImg.onerror = () => {};
-      playerBulletImg.src = "/images/playerBullet.png";
+      playerBulletImg.src = "./assets/playerBullet.png"
 
       const enemyBulletImg = new Image();
       enemyBulletImg.onload = () => {
         enemyBulletImageRef.current = enemyBulletImg;
       };
       enemyBulletImg.onerror = () => {};
-      enemyBulletImg.src = "/images/enemyBullet.png";
+      enemyBulletImg.src = "/assets/enemyBullet.png";
     };
 
     enemyShootingSoundRef.current = null;
