@@ -1,5 +1,5 @@
 import React from "react";
-import { gameColorVariants } from "../../games/GameStyleData";
+// import { gameColorVariants } from "../../games/GameStyleData";
 
 interface ArcadeMachineScreensI {
   className?: string;
@@ -93,8 +93,8 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
   onClick,
   nameSigns,
 }) => {
-  const { glow, text, pulse } =
-    gameColorVariants[name] || gameColorVariants.DEFAULT;
+  // const { glow, text, pulse } =
+  //   gameColorVariants[name] || gameColorVariants.DEFAULT;
 
   return (
     <div id={name} className="absolute" style={style}>
