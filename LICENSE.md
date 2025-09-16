@@ -6,7 +6,7 @@ This project, including but not limited to its structure, concept, design, inter
 
 ---
 
-## 🚫 You May NOT:
+##  You May NOT:
 
 - Reproduce or distribute this project or its assets for **commercial purposes**.
 - Republish this project (or its substantial parts) **without permission**.
@@ -14,7 +14,7 @@ This project, including but not limited to its structure, concept, design, inter
 
 ---
 
-## ✅ You MAY:
+##  You MAY:
 
 - Be inspired by the **idea** of a nostalgic, game-style portfolio.
 - Create your own unique interpretation **with attribution**.
@@ -22,7 +22,7 @@ This project, including but not limited to its structure, concept, design, inter
 
 ---
 
-## 💬 Credit Requirements:
+##  Credit Requirements:
 
 If you create something inspired by this project, you must clearly credit:
 
@@ -32,7 +32,7 @@ Link back to: [Azlyum GitHub](https://github.com/Azlyum)
 
 ---
 
-## 🧠 Idea vs. Expression:
+##  Idea vs. Expression:
 
 This license does not claim ownership over the general idea of combining a retro arcade with portfolio content.
 
@@ -47,7 +47,7 @@ However, the **specific implementation** of:
 
 ---
 
-## 📬 Need Permission?
+##  Need Permission?
 
 For commercial use, licensing, or collaborations, please contact:
 
