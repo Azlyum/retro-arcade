@@ -47,6 +47,21 @@ export default function BugSquash() {
 
   const holes = useMemo(() => Array.from({ length: NUM_HOLES }), []);
 
+  const getSquareColor = (bug: Bugs) => {
+    if (!bug) return "bg-green-400";
+
+    switch (bug.category) {
+      case "reward":
+        return "bg-green-400";
+      case "trap":
+        return "bg-red-400";
+      case "special":
+        return "bg-blue-400";
+      default:
+        return "bg-green-400";
+    }
+  };
+
   function clearTimers() {
     if (spawnTimerRef.current) window.clearInterval(spawnTimerRef.current);
     if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
@@ -70,6 +85,7 @@ export default function BugSquash() {
 
   function start() {
     reset();
+
     setGameState("playing");
     spawnBug();
   }
@@ -103,7 +119,6 @@ export default function BugSquash() {
   function handleHoleClick(index: number) {
     if (gameState !== "playing") return;
     if (activeHoleIndex !== index || !activeBug) {
-      // Miss - wrong hole or no bug
       setStreak(0);
       setHearts((h) => {
         const next = clamp(h - 1, 0, MAX_HEARTS);
@@ -149,7 +164,10 @@ export default function BugSquash() {
     countdownRef.current = window.setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          setTimeout(() => setGameState("gameOver"), 0);
+          setTimeout(() => {
+            setGameState("gameOver");
+            setHearts(0);
+          }, 0);
           return 0;
         }
         return t - 1;
@@ -180,35 +198,73 @@ export default function BugSquash() {
     };
   }, [round, gameState, spawnBug]);
 
-  // Reset timer only when round changes
   useEffect(() => {
     if (gameState === "playing") {
       setTimeLeft(ROUND_TIME_SECONDS);
     }
   }, [round, gameState]);
 
-  // global cleanup
   useEffect(() => clearTimers, []);
 
   return (
-    <div className="relative flex flex-col items-center gap-6 p-6 text-white">
-      {/* CRT Scanline Overlay */}
+    <div className="relative flex flex-col items-center gap-6 p-6 text-white min-h-screen">
       <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-        {/* Moving horizontal scanlines */}
         <div className="absolute inset-0 w-full h-full">
           <div className="w-full h-full bg-gradient-to-b from-transparent via-black/40 to-transparent bg-[length:100%_2px] bg-repeat-y animate-[scanlines_0.1s_linear_infinite]"></div>
         </div>
-        {/* Vertical scanlines */}
+
         <div className="absolute inset-0 w-full h-full">
           <div className="w-full h-full bg-gradient-to-r from-transparent via-red-500/15 to-transparent bg-[length:1px_100%] bg-repeat-x"></div>
         </div>
-        {/* Screen flicker effect */}
+
         <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-black/10 via-transparent to-black/10 bg-[length:100%_1px] bg-repeat-y animate-pulse"></div>
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <div
+            className="absolute w-full h-2 bg-gradient-to-r from-transparent via-green-300/40 to-transparent"
+            style={{
+              animation: "sweepDown 16s linear infinite",
+              top: "-2px",
+              filter: "blur(0.5px)",
+              boxShadow: "0 0 4px rgba(34, 197, 94, 0.3)",
+            }}
+          ></div>
+        </div>
       </div>
 
-      <h1 className="text-3xl font-bold tracking-wide text-green-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.8)]">
-        Bug Squash
-      </h1>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes sweepDown {
+              0% {
+                transform: translateY(-100vh) translateX(0px);
+                opacity: 0;
+              }
+              5% {
+                opacity: 0.6;
+              }
+              25% {
+                transform: translateY(-75vh) translateX(2px);
+                opacity: 0.8;
+              }
+              50% {
+                transform: translateY(-50vh) translateX(-1px);
+                opacity: 1;
+              }
+              75% {
+                transform: translateY(-25vh) translateX(1px);
+                opacity: 0.8;
+              }
+              95% {
+                opacity: 0.6;
+              }
+              100% {
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+              }
+            }
+          `,
+        }}
+      />
 
       <div className="flex items-center gap-6">
         <div className="rounded bg-black/60 px-4 py-2 border border-green-500/30 shadow-[0_0_15px_rgba(34,197,94,0.3)]">
@@ -306,9 +362,12 @@ export default function BugSquash() {
                   })()}
                 </div>
               ) : null}
-              {/* Terminal cursor effect when active */}
               {isActive && (
-                <div className="absolute bottom-2 right-2 w-2 h-2 bg-green-400 animate-pulse"></div>
+                <div
+                  className={`absolute bottom-2 right-2 w-2 h-2 ${getSquareColor(
+                    activeBug
+                  )} animate-pulse`}
+                ></div>
               )}
             </button>
           );

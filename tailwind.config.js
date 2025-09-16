@@ -75,6 +75,8 @@ module.exports = {
         pulseNeonPurple: "pulseNeonPurple 2s ease-in-out infinite",
         pulseNeonRed: "pulseNeonRed 2s ease-in-out infinite",
         pulseRainbow: "pulseRainbow 3s ease-in-out infinite",
+        refreshSweep: "refreshSweep 2s linear infinite",
+        sweepDown: "sweepDown 16s linear infinite",
       },
 
       keyframes: {
@@ -185,6 +187,44 @@ module.exports = {
         },
         "100%": {
           filter: "drop-shadow(0 0 4px #ff00ff) drop-shadow(0 0 8px #00ffff)",
+        },
+      },
+      refreshSweep: {
+        "0%": {
+          transform: "translateY(-100vh)",
+          opacity: "1",
+        },
+        "100%": {
+          transform: "translateY(100vh)",
+          opacity: "1",
+        },
+      },
+      sweepDown: {
+        "0%": {
+          transform: "translateY(-100vh) translateX(0px)",
+          opacity: "0",
+        },
+        "5%": {
+          opacity: "0.6",
+        },
+        "25%": {
+          transform: "translateY(-75vh) translateX(2px)",
+          opacity: "0.8",
+        },
+        "50%": {
+          transform: "translateY(-50vh) translateX(-1px)",
+          opacity: "1",
+        },
+        "75%": {
+          transform: "translateY(-25vh) translateX(1px)",
+          opacity: "0.8",
+        },
+        "95%": {
+          opacity: "0.6",
+        },
+        "100%": {
+          transform: "translateY(100vh) translateX(0px)",
+          opacity: "0",
         },
       },
     },
