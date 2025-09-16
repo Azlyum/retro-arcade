@@ -96,14 +96,14 @@ export const Canvas = ({
         playerBulletImageRef.current = playerBulletImg;
       };
       playerBulletImg.onerror = () => {};
-      playerBulletImg.src = "./assets/playerBullet.png";
+      playerBulletImg.src = require("./assets/playerBullet.png");
 
       const enemyBulletImg = new Image();
       enemyBulletImg.onload = () => {
         enemyBulletImageRef.current = enemyBulletImg;
       };
       enemyBulletImg.onerror = () => {};
-      enemyBulletImg.src = "./assets/enemyBullet.png";
+      enemyBulletImg.src = require("./assets/enemyBullet.png");
     };
 
     enemyShootingSoundRef.current = null;
@@ -290,8 +290,8 @@ export const Canvas = ({
           enemyBulletsRef.current.push({
             enemyBulletX: shooter.x + shooter.width / 2,
             enemyBulletY: shooter.y + shooter.height,
-            enemyBulletwidth: 20,
-            enemyBulletheight: 24,
+            enemyBulletwidth: 30,
+            enemyBulletheight: 36,
           });
         }
 

@@ -49,8 +49,8 @@ export const usePlayerControls = (
   const shootBullet = () => {
     AudioManager.play("shooting");
 
-    const width = bigBulletActiveRef.current ? 30 : 20;
-    const height = bigBulletActiveRef.current ? 30 : 20;
+    const width = bigBulletActiveRef.current ? 40 : 30;
+    const height = bigBulletActiveRef.current ? 40 : 30;
     const damageMultiplier = playerDamageMultiplierRef.current;
     const bigBulletDamage = bigBulletActiveRef.current ? 200 : 100;
     const doubleShotDamage = 200;
