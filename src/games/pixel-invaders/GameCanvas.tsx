@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
 import { usePlayerControls, checkBulletHits } from "./gameLogic";
 import { drawPlayer } from "./drawPlayer";
@@ -23,8 +23,10 @@ import { getCachedImage } from "./utils/imageCache";
 
 export const Canvas = ({
   onGameOver,
+  onSpawnPowerUp,
 }: {
   onGameOver: (score: number) => void;
+  onSpawnPowerUp?: (powerUp: string) => void;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState(window.innerWidth * 0.95);
@@ -139,6 +141,36 @@ export const Canvas = ({
     activePowerUpsRef.current = [];
   };
 
+  // Admin function to spawn power-ups
+  const spawnPowerUp = useCallback(
+    (power: string) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const playerY = canvas.height - 100;
+      const newPowerUp: PowerUp = {
+        power,
+        x: playerXRef.current + 50 - 16, // Center on player
+        y: playerY - 50, // Above player
+        height: 32,
+        width: 32,
+        opacity: 1,
+        powerUpExpirationTimer: Date.now() + 15000,
+      };
+
+      powerUpsRef.current.push(newPowerUp);
+    },
+    [playerXRef]
+  );
+
+  // Expose spawnPowerUp to parent component
+  useEffect(() => {
+    if (onSpawnPowerUp) {
+      // Store the function reference so parent can call it
+      (window as any).spawnPowerUp = spawnPowerUp;
+    }
+  }, [onSpawnPowerUp, spawnPowerUp]);
+
   const activatePowerUp = (power: string) => {
     const duration = 15000;
     const expiration = Date.now() + duration;
@@ -157,7 +189,13 @@ export const Canvas = ({
     if (power === "damage boost") {
       permanentDamageBoostsRef.current += 1;
       playerDamageMultiplierRef.current += 0.5;
-      activePowerUpsRef.current.push({ power, expiration: Infinity });
+      // Only add one damage boost entry, don't duplicate
+      const existingDamageBoost = activePowerUpsRef.current.find(
+        (p) => p.power === "damage boost"
+      );
+      if (!existingDamageBoost) {
+        activePowerUpsRef.current.push({ power, expiration: Infinity });
+      }
       return;
     }
 
@@ -635,7 +673,9 @@ export const Canvas = ({
       ctx.fillStyle = "white";
       ctx.font = "bold 24px 'Press Start 2P', cursive";
       ctx.fillText(`Wave: ${waveRef.current}`, 20, 30);
-      ctx.fillText(`Score: ${scoreRef.current}`, 720, 30);
+      ctx.textAlign = "center";
+      ctx.fillText(`Score: ${scoreRef.current}`, canvas.width / 2, 30);
+      ctx.textAlign = "left";
 
       if (playerDamageMultiplierRef.current > 1) {
         ctx.fillStyle = "#ff4444";
@@ -652,7 +692,7 @@ export const Canvas = ({
         ctx.font = "bold 16px 'Press Start 2P', cursive";
         ctx.fillText(`Power-ups: ${activePowerUpsRef.current.length}`, 20, 50);
 
-        let effectY = 80;
+        let effectY = 110;
         activePowerUpsRef.current.forEach((powerUp) => {
           if (powerUp.expiration === Infinity) {
             ctx.fillStyle = "#00ffff";
