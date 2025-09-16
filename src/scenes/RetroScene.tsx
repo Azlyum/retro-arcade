@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Howl } from "howler";
 import { ArcadeMachineScreens } from "../components/arcade-machines/ArcadeMachineScreens";
@@ -10,6 +10,46 @@ import BugSquash from "../games/bugSquash/bugSquash";
 const RetroScene = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [cabinetTop, setCabinetTop] = useState<string>("480px");
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const bgImgRef = useRef<HTMLImageElement | null>(null);
+
+  // Recalculate the vertical position to align with the background image
+  useEffect(() => {
+    const recalCabinetTop = () => {
+      const container = containerRef.current;
+      const img = bgImgRef.current;
+      if (!container || !img) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const containerW = containerRect.width;
+      const containerH = containerRect.height;
+
+      const naturalW = img.naturalWidth || 1920;
+      const naturalH = img.naturalHeight || 1080;
+
+      // Scale used by object-cover
+      const scale = Math.max(containerW / naturalW, containerH / naturalH);
+
+      // Vertical crop if the scaled image is taller than the container
+      const scaledH = naturalH * scale;
+      const verticalCrop = Math.max(0, scaledH - containerH) / 2;
+
+      // Baseline Y in source image coordinates (designed around ~1080px height)
+      const baselineYInImage = naturalH * 0.4445; // ~480px on a 1080px tall image
+
+      const yOnScreen = baselineYInImage * scale - verticalCrop;
+      // Use CSS variable directly so edits apply instantly without JS recalculation
+      setCabinetTop(
+        `calc(${Math.round(yOnScreen)}px + var(--cabinet-offset-y, 0px))`
+      );
+    };
+
+    recalCabinetTop();
+    window.addEventListener("resize", recalCabinetTop);
+    return () => window.removeEventListener("resize", recalCabinetTop);
+  }, []);
 
   const handleGameClick = (gameName: string) => {
     if (gameName === "PIXEL INVADERS" || gameName === "BUG SQUASH") {
@@ -33,11 +73,20 @@ const RetroScene = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
+    <div
+      ref={containerRef}
+      className="relative w-screen h-screen overflow-hidden"
+    >
       <img
+        ref={bgImgRef}
         src="./images/retroArcade/retroFloor.png"
         alt="Retro Arcade Floor"
         className="absolute inset-0 w-full h-full object-cover opacity-70 z-0"
+        onLoad={() => {
+          // Ensure initial calculation after image metadata is available
+          const event = new Event("resize");
+          window.dispatchEvent(event);
+        }}
       />
 
       <AnimatePresence>
@@ -52,7 +101,7 @@ const RetroScene = () => {
               <ArcadeMachineScreens
                 key={machine.name}
                 name={machine.name}
-                style={machine.machineStyle}
+                style={{ ...machine.machineStyle, top: cabinetTop }}
                 className={`absolute z-10 font-arcade overflow-hidden rounded-2xl ${machine.textSize}`}
                 nameSigns={
                   <Signs
