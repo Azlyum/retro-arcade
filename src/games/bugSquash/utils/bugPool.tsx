@@ -1,21 +1,13 @@
-// Trap bugs
+// Console errors and computer virus themed bugs
 import {
-  XCircleIcon,
   ExclamationTriangleIcon,
-  NoSymbolIcon,
-} from "@heroicons/react/24/solid";
-// Reward bugs
-import {
+  ExclamationCircleIcon,
+  FireIcon,
   BugAntIcon,
-  SparklesIcon,
-  StarIcon,
   HeartIcon,
-} from "@heroicons/react/24/solid";
-// Special bugs
-import {
-  CpuChipIcon,
-  CommandLineIcon,
-  BoltIcon,
+  ClockIcon,
+  CurrencyDollarIcon,
+  StarIcon,
 } from "@heroicons/react/24/solid";
 
 export type BugPoolProps = {
@@ -28,27 +20,78 @@ export type BugPoolProps = {
 };
 
 export const bugPool: BugPoolProps[] = [
+  // Basic reward bugs - Console fixes
+  {
+    id: "basicBug",
+    category: "reward",
+    effect: { points: 1 },
+    icon: BugAntIcon,
+    probability: 0.65,
+    style: "text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]",
+  },
+  {
+    id: "goldBug",
+    category: "reward",
+    effect: { points: 3 },
+    icon: CurrencyDollarIcon,
+    probability: 0.12,
+    style:
+      "text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.9)] animate-pulse",
+  },
+  {
+    id: "starBug",
+    category: "reward",
+    effect: { points: 5 },
+    icon: StarIcon,
+    probability: 0.05,
+    style:
+      "text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.9)] animate-bounce",
+  },
+
+  // Trap bugs - Console errors and viruses
   {
     id: "heartDrain",
     category: "trap",
     effect: { hearts: -1 },
-    icon: XCircleIcon,
-    probability: 0.2,
+    icon: ExclamationTriangleIcon,
+    probability: 0.08,
+    style:
+      "text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] animate-pulse",
+  },
+  {
+    id: "timeDrain",
+    category: "trap",
+    effect: { time: -5 },
+    icon: ExclamationCircleIcon,
+    probability: 0.05,
+    style: "text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.7)]",
+  },
+  {
+    id: "skullBug",
+    category: "trap",
+    effect: { hearts: -2 },
+    icon: FireIcon,
+    probability: 0.02,
+    style:
+      "text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse",
   },
 
+  // Special bugs - System utilities
   {
     id: "heartHeal",
     category: "special",
-    effect: { hearts: +1 },
+    effect: { hearts: 1 },
     icon: HeartIcon,
-    probability: 0.05,
+    probability: 0.02,
+    style:
+      "text-pink-400 drop-shadow-[0_0_12px_rgba(244,114,182,0.8)] animate-pulse",
   },
-
   {
-    id: "basicBug",
-    category: "reward",
-    effect: { points: +1 },
-    icon: BugAntIcon,
-    probability: 0.8,
+    id: "timeBoost",
+    category: "special",
+    effect: { time: 10 },
+    icon: ClockIcon,
+    probability: 0.01,
+    style: "text-blue-400 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]",
   },
 ];
