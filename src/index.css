@@ -37,3 +37,13 @@ code {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+/* CRT Scanline Animation */
+@keyframes scanlines {
+  0% {
+    background-position: 0 -2px;
+  }
+  100% {
+    background-position: 0 100vh;
+  }
+}

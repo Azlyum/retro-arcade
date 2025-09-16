@@ -193,10 +193,17 @@ export default function BugSquash() {
   return (
     <div className="relative flex flex-col items-center gap-6 p-6 text-white">
       {/* CRT Scanline Overlay */}
-      <div className="absolute inset-0 pointer-events-none z-10">
-        <div className="w-full h-full bg-gradient-to-b from-transparent via-black/20 to-transparent bg-[length:100%_3px] bg-repeat-y"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent bg-[length:3px_100%] bg-repeat-x"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/10 bg-[length:100%_1px] bg-repeat-y animate-pulse"></div>
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+        {/* Moving horizontal scanlines */}
+        <div className="absolute inset-0 w-full h-full">
+          <div className="w-full h-full bg-gradient-to-b from-transparent via-black/40 to-transparent bg-[length:100%_2px] bg-repeat-y animate-[scanlines_0.1s_linear_infinite]"></div>
+        </div>
+        {/* Vertical scanlines */}
+        <div className="absolute inset-0 w-full h-full">
+          <div className="w-full h-full bg-gradient-to-r from-transparent via-red-500/15 to-transparent bg-[length:1px_100%] bg-repeat-x"></div>
+        </div>
+        {/* Screen flicker effect */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-black/10 via-transparent to-black/10 bg-[length:100%_1px] bg-repeat-y animate-pulse"></div>
       </div>
 
       <h1 className="text-3xl font-bold tracking-wide text-green-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.8)]">
