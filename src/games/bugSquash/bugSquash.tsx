@@ -214,7 +214,7 @@ export default function BugSquash() {
         </div>
 
         <div className="absolute inset-0 w-full h-full">
-          <div className="w-full h-full bg-gradient-to-r from-transparent via-red-500/15 to-transparent bg-[length:1px_100%] bg-repeat-x"></div>
+          <div className="w-full h-full bg-gradient-to-r from-transparent via-red-200/15 to-transparent bg-[length:1px_100%] bg-repeat-x"></div>
         </div>
 
         <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-black/10 via-transparent to-black/10 bg-[length:100%_1px] bg-repeat-y animate-pulse"></div>
