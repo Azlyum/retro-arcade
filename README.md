@@ -1,99 +1,99 @@
-#  Retro Arcade Web App
+# Retro Arcade
 
-Step into a web-based retro arcade with a twist—this immersive app blends nostalgic gaming aesthetics with modern tech and secret surprises.
+This is a browser-based retro arcade I built as a portfolio project.
 
----
+Right now, the arcade acts as a central hub where you can select and play original mini-games I’ve built from scratch. The focus at this stage is on the games themselves rather than a fully explorable environment.
 
-##  Concept
-
-The **Retro Arcade Web App** is a dynamic, interactive environment designed to mimic an old-school arcade. Players can explore multiple themed rooms, launch mini-games, and even stumble upon a hidden "Manager's Office" that houses a portfolio—but it's not the main event.
+**Live demo:** https://retro-arcade-kappa.vercel.app/
 
 ---
 
-###  Key Features
+## About the arcade space
 
-- **Themed Rooms**:
+The arcade is intentionally static for now.
 
-  -  **Retro Room** – Neon lights, pixel vibes, and classic arcade aesthetics.
-  -  **Modern Room** – Updated visuals and sleeker game interfaces.
-  -  **Futuristic Room** – Sci-fi edge and high-tech designs.
+At this stage, it functions as a **hub** rather than a walkable world. That was a deliberate choice while I focused on designing, building, and polishing the individual games first.
 
-- **Game Machines** – Clickable cabinets to launch browser-based mini-games.
-- **Animated Doors** – Transitions between rooms using smooth UI animations.
--  **Manager's Door** (Locked) – Hidden behind login, this reveals my **portfolio** in the form of an office. It's subtle, secret, and just for curious minds or recruiters.
+The long-term idea is to expand the arcade into multiple rooms with different machines and themes, but for now the goal is simplicity and clarity: pick a cabinet, play a game, and move on without friction.
+
+This lets the games stand on their own instead of hiding behind extra systems too early.
 
 ---
 
-##  Project Status
+## Why I built this
 
-Currently in **active development**.
+I wanted a portfolio project that:
 
- App structure in progress  
- Game components being built  
- Login-protected portfolio office underway  
- Visual theming and arcade UX being refined
+- wasn’t another CRUD app or dashboard
+- let me work with interaction, animation, sound, and game-style logic
+- pushed me outside typical frontend patterns
+- and actually felt fun to use
 
----
-
-##  Roadmap
-
-Here’s what’s coming up next:
-
-###  Core Features
-
-- [ ] Add multiple browser-playable mini-games (starting with 2)
-- [ ] Create game-launch UI with retro splash/start screens
-- [ ] Add score system (local first, backend later)
-
-###  Arcade Structure
-
-- [ ] Build animated transitions between rooms using Framer Motion
-- [ ] Create styled arcade machines per room (different themes)
-- [ ] Add visual ambiance (flickering lights, CRT effects, background music)
-
-###  Portfolio Integration
-
-- [ ] Build login system for unlocking Manager’s Office
-- [ ] Design office layout for portfolio showcase
-- [ ] Display projects, resume, and contact inside the Manager's space
-
-###  Backend & Auth
-
-- [ ] Set up user authentication (Firebase or custom Node.js)
-- [ ] Store user data like high scores or access flags
-- [ ] Add admin panel for managing content in the future
-
-### Bonus & Easter Eggs
-
-- [ ] Konami code unlock or hidden shortcut
-- [ ] NPC arcade attendant with fun dialogue
-- [ ] "Retro lore" items hidden around rooms
+The arcade format gave me a way to group multiple ideas together while still keeping each game self-contained.
 
 ---
 
-##  Tech Stack
+## The games
 
-- **Frontend**: React / Next.js
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Animation**: Framer Motion
-- **Games**: Custom-built or Phaser.js
-- **Auth & Backend (Planned)**: Node.js or Firebase
+### Bug Squash
 
----
+A small, fast reflex game.
 
-##  Inspiration & License
+Bug Squash is intentionally simple:
 
-This is an original concept and implementation by **Dyllan C. Marais / Azlyum**.
+- short play sessions
+- immediate input → feedback
+- very little setup or explanation
 
-This project may inspire others, but usage or replication must follow license terms.  
-See: [LICENSE.md](./LICENSE.md)
+The focus here was restraint. I wanted the core loop to feel good without adding unnecessary mechanics or systems.
 
 ---
 
-##  Contact
+### Pixel Invaders
 
-Interested in collaboration, feedback, or commercial use?  
-Reach out via the contact form in the “Manager’s Office” or visit:
+A more involved arcade shooter inspired by classic space-invader-style games.
 
-[https://github.com/Azlyum](https://github.com/Azlyum)
+This one includes:
+
+- a real-time game loop using `<canvas>`
+- enemies, bullets, collisions, and power-ups
+- wave-based difficulty
+- internal dev/debug tools I used while building and testing
+
+Pixel Invaders is where I pushed myself the most technically and worked through the messier parts of game logic inside a React app.
+
+---
+
+## How it’s structured
+
+- The **arcade** handles navigation, transitions, audio, and mounting/unmounting games.
+- Each **game is isolated** so it doesn’t interfere with the others.
+- React is used for UI, layout, and flow.
+- Canvas is used where real-time rendering makes more sense.
+- Shared arcade state and per-game state are kept separate on purpose.
+
+I prioritised clarity and separation over clever abstractions.
+
+---
+
+## Tech used
+
+- React
+- TypeScript
+- Create React App
+- Framer Motion (animations)
+- Zustand (state)
+- Howler.js (audio)
+- Canvas API
+- Deployed on Vercel
+
+---
+
+## Running locally
+
+```bash
+git clone https://github.com/Azlyum/retro-arcade.git
+cd retro-arcade
+npm install
+npm start
+```
