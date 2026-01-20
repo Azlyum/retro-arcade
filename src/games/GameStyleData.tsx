@@ -15,7 +15,7 @@ export const gameColorVariants: Record<
     text: "text-green-300 text-shadow-neonGreen",
     pulse: "animate-pulseNeonGreen",
   },
-  "404 RUNNER": {
+  "RUNNER": {
     glow: "shadow-neonPink",
     text: "text-pink-300 text-shadow-neonPink",
     pulse: "animate-pulseNeonPink",
@@ -65,7 +65,7 @@ export const machines = [
     textSize: "text-[1.1rem]",
   },
   {
-    name: "404 RUNNER",
+    name: "RUNNER",
     machineStyle: {
       top: CABINET_VERTICAL_POSITION,
       left: "46.5%",

@@ -6,6 +6,7 @@ import { machines } from "../games/GameStyleData";
 import { Signs } from "../components/signs/Signs";
 import { PixelInvadersStartScreen } from "../games/pixel-invaders/pixelInvadersGame";
 import BugSquash from "../games/bugSquash/bugSquash";
+import { Runner } from "../games/404Runner/runner";
 
 const RetroScene = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -15,7 +16,6 @@ const RetroScene = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const bgImgRef = useRef<HTMLImageElement | null>(null);
 
-  // Recalculate the vertical position to align with the background image
   useEffect(() => {
     const recalCabinetTop = () => {
       const container = containerRef.current;
@@ -29,18 +29,14 @@ const RetroScene = () => {
       const naturalW = img.naturalWidth || 1920;
       const naturalH = img.naturalHeight || 1080;
 
-      // Scale used by object-cover
       const scale = Math.max(containerW / naturalW, containerH / naturalH);
 
-      // Vertical crop if the scaled image is taller than the container
       const scaledH = naturalH * scale;
       const verticalCrop = Math.max(0, scaledH - containerH) / 2;
 
-      // Baseline Y in source image coordinates (designed around ~1080px height)
-      const baselineYInImage = naturalH * 0.4445; // ~480px on a 1080px tall image
+      const baselineYInImage = naturalH * 0.4445;
 
       const yOnScreen = baselineYInImage * scale - verticalCrop;
-      // Use CSS variable directly so edits apply instantly without JS recalculation
       setCabinetTop(
         `calc(${Math.round(yOnScreen)}px + var(--cabinet-offset-y, 0px))`
       );
@@ -52,7 +48,7 @@ const RetroScene = () => {
   }, []);
 
   const handleGameClick = (gameName: string) => {
-    if (gameName === "PIXEL INVADERS" || gameName === "BUG SQUASH") {
+    if (gameName === "PIXEL INVADERS" || gameName === "BUG SQUASH" || gameName === "RUNNER") {
       setSelectedGame(gameName);
       setIsZoomed(true);
 
@@ -83,7 +79,6 @@ const RetroScene = () => {
         alt="Retro Arcade Floor"
         className="absolute inset-0 w-full h-full object-cover opacity-70 z-0"
         onLoad={() => {
-          // Ensure initial calculation after image metadata is available
           const event = new Event("resize");
           window.dispatchEvent(event);
         }}
@@ -145,6 +140,7 @@ const RetroScene = () => {
                     <PixelInvadersStartScreen />
                   )}
                   {selectedGame === "BUG SQUASH" && <BugSquash />}
+                  {selectedGame === "RUNNER" && <Runner />}
                 </div>
               </motion.div>
             </div>

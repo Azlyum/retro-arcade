@@ -70,7 +70,7 @@ export const createEnemies = (
         case "blitz":
           spriteKey = "js";
           break;
-      }
+      } 
 
       enemies.push({
         x: offsetX + col * spacingX,
