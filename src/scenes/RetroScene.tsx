@@ -52,7 +52,6 @@ const RetroScene = () => {
       setSelectedGame(gameName);
       setIsZoomed(true);
 
-      // Play arcade boot sound
       const bootSound = new Howl({
         src: ["/sounds/arcade-boot.mp3"],
         volume: 0.5,

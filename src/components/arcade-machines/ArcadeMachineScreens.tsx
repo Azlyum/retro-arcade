@@ -1,5 +1,4 @@
 import React from "react";
-// import { gameColorVariants } from "../../games/GameStyleData";
 
 interface ArcadeMachineScreensI {
   className?: string;
@@ -62,9 +61,6 @@ export const RunnerScreen: React.FC = () => {
   return (
    <div className="w-full h-full flex items-center justify-center">
       <div className="relative bottom-6 w-[220px] h-[110px] bg-black p-1 border-2 border-red-900 shadow-neonRed overflow-hidden rounded-xl">
-        {/* <div className="absolute top-1 left-1 text-green-300 text-[10px] font-arcade">
-          OUT RUN 'EM!
-        </div> */}
         <div className="text-red-300">
           COMING SOON
         </div>
@@ -103,8 +99,6 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
     <div id={name} className="absolute" style={style}>
       <div className="relative w-full h-full">
         {nameSigns}
-
-        {/* Game screen preview zones */}
         {name === "PIXEL INVADERS" && (
           <div
             onClick={onClick}

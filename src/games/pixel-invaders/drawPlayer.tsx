@@ -16,17 +16,13 @@ export const drawPlayer = (
   }
 
   if (isShieldActive) {
-    // Create dynamic shield effect
-    const time = Date.now() * 0.005; // Animation speed
-    const pulse = Math.sin(time) * 0.3 + 0.7; // Pulsing effect
+    const time = Date.now() * 0.005;
+    const pulse = Math.sin(time) * 0.3 + 0.7;
 
-    // Draw shield outline with pulsing
     ctx.strokeStyle = `rgba(0, 255, 255, ${pulse})`;
     ctx.lineWidth = 3;
     ctx.setLineDash([5, 5]);
-    ctx.lineDashOffset = -time * 0.5; // Animated dash offset
-
-    // Shield shape - rounded rectangle
+    ctx.lineDashOffset = -time * 0.5;
     const shieldX = playerX - 15;
     const shieldY = PLAYER_Y - 15;
     const shieldWidth = width + 30;

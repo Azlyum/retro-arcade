@@ -1,4 +1,3 @@
-// Console errors and computer virus themed bugs
 import {
   CodeBracketIcon,
   CommandLineIcon,

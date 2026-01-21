@@ -103,7 +103,6 @@ export const usePlayerControls = (
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasWidth]);
 
   return { playerX, playerXRef, keysPressed, lastShotTime, shootBullet };
@@ -164,7 +163,6 @@ export const checkBulletHits = (
           if (onEnemyDeath) {
             const centerX = scaledX + scaledWidth / 2;
             const centerY = scaledY + scaledHeight / 2;
-            // Scale intensity by enemy durability but dampen by wave to avoid excessive shake later
             const base = Math.max(3, enemy.maxHealth / 25);
             const waveDampen =
               1 / (1 + Math.max(0, waveRef.current - 1) * 0.08);

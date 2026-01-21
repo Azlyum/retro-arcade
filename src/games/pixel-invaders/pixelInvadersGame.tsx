@@ -62,19 +62,15 @@ export const PixelInvadersStartScreen = () => {
     AudioManager.setMuted(muted);
   }, [muted]);
 
-  // Handle admin key sequence (9+8+7)
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.code === "Digit9" || e.code === "Digit8" || e.code === "Digit7") {
         const digit = e.code.replace("Digit", "");
-        console.log("Key pressed:", digit); // Debug logging
         setKeySequence((prev) => {
           const newSequence = [...prev, digit];
-          // Keep only last 3 keys
-          if (newSequence.length > 3) {
+          if (newSequence.length > 6) {
             newSequence.shift();
           }
-          console.log("Current sequence:", newSequence.join("")); // Debug logging
           return newSequence;
         });
       }
@@ -84,15 +80,12 @@ export const PixelInvadersStartScreen = () => {
     return () => document.removeEventListener("keydown", handleKeyPress);
   }, []);
 
-  // Check for admin sequence when keySequence changes
   useEffect(() => {
-    if (keySequence.length >= 3) {
+    if (keySequence.length >= 6) {
       const sequence = keySequence.join("");
-      console.log("Checking sequence:", sequence); // Debug logging
-      if (sequence === "987") {
-        console.log("Admin mode toggled!"); // Debug logging
+      if (sequence === "987789") {
         setAdminMode((prev) => !prev);
-        setKeySequence([]); // Reset sequence
+        setKeySequence([]);
       }
     }
   }, [keySequence]);

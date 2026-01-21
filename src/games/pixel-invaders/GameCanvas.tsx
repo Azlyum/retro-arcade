@@ -141,7 +141,6 @@ export const Canvas = ({
     activePowerUpsRef.current = [];
   };
 
-  // Admin function to spawn power-ups
   const spawnPowerUp = useCallback(
     (power: string) => {
       const canvas = canvasRef.current;
@@ -150,8 +149,8 @@ export const Canvas = ({
       const playerY = canvas.height - 100;
       const newPowerUp: PowerUp = {
         power,
-        x: playerXRef.current + 50 - 16, // Center on player
-        y: playerY - 50, // Above player
+        x: playerXRef.current + 50 - 16,
+        y: playerY - 50,
         height: 32,
         width: 32,
         opacity: 1,
@@ -163,10 +162,8 @@ export const Canvas = ({
     [playerXRef]
   );
 
-  // Expose spawnPowerUp to parent component
   useEffect(() => {
     if (onSpawnPowerUp) {
-      // Store the function reference so parent can call it
       (window as any).spawnPowerUp = spawnPowerUp;
     }
   }, [onSpawnPowerUp, spawnPowerUp]);
@@ -189,7 +186,6 @@ export const Canvas = ({
     if (power === "damage boost") {
       permanentDamageBoostsRef.current += 1;
       playerDamageMultiplierRef.current += 0.5;
-      // Only add one damage boost entry, don't duplicate
       const existingDamageBoost = activePowerUpsRef.current.find(
         (p) => p.power === "damage boost"
       );
@@ -375,9 +371,7 @@ export const Canvas = ({
         isScoreBoostActiveRef,
         waveRef,
         (cx, cy, intensity) => {
-          // explosion
           explosionsRef.current.push({ x: cx, y: cy, r: 10, life: 18 });
-          // screen shake
           const mag = intensity * 0.45;
           shakeRef.current = { t: 12, mag, base: mag };
         }
@@ -476,11 +470,9 @@ export const Canvas = ({
         });
       };
 
-      // apply screen shake
       if (shakeRef.current.t > 0) {
         const s = shakeRef.current;
-        // ease in/out using a sine curve over lifetime
-        const lifeRatio = s.t / 14; // 14 frames total
+        const lifeRatio = s.t / 14;
         const ease = Math.sin(lifeRatio * Math.PI);
         const currentMag = s.base * ease;
         const dx = (Math.random() - 0.5) * currentMag;
@@ -494,7 +486,6 @@ export const Canvas = ({
       } else {
         drawEnemies(ctx, enemiesRef.current);
       }
-      // explosions
       explosionsRef.current.forEach((e) => {
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
@@ -512,7 +503,6 @@ export const Canvas = ({
       });
       explosionsRef.current = explosionsRef.current.filter((e) => e.life > 0);
 
-      // muzzle flashes
       muzzleFlashesRef.current.forEach((f) => {
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
@@ -728,7 +718,6 @@ export const Canvas = ({
       window.removeEventListener("resize", resizeCanvas);
       if (rafId) cancelAnimationFrame(rafId);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onGameOver, playerXRef]);
 
   return (
