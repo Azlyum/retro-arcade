@@ -159,3 +159,5 @@ export const RunnerCanvas = () => {
     />
   );
 };
+
+// tomorrow lock player position with the position of the platforms to create the illusion of movement and add more platform types
