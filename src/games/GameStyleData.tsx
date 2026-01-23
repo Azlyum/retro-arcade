@@ -39,7 +39,7 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-230px",
+      top: "-250px",
       left: "80%",
       transform: "translateX(-50%) rotate(4deg) skewX(9deg) skewY(2deg)",
       transformOrigin: "center",
@@ -75,8 +75,8 @@ export const machines = [
       transformOrigin: "center",
     },
     signStyle: {
-      top: "-180px",
-      left: "95%",
+      top: "-175px",
+      left: "97%",
       transform: "translateX(-50%) rotate(4deg) skewX(6deg) skewY(2deg)",
       transformOrigin: "center",
     },

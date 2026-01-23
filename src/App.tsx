@@ -3,16 +3,18 @@ import "./App.css";
 import LandingPage from "./scenes/LandingScene";
 import RetroScene from "./scenes/RetroScene";
 import { useArcadeStore } from "./state/useArcadeStore";
+import { RunnerCanvas } from "./games/404Runner/RunnerCanvas";
 
 export default function App() {
   const { currentScene, setScene } = useArcadeStore();
 
   return (
     <>
-      {currentScene === "landing" && (
+      {/* {currentScene === "landing" && (
         <LandingPage onTransitionEnd={() => setScene("arcade")} />
       )}
-      {currentScene === "arcade" && <RetroScene />}
+      {currentScene === "arcade" && <RetroScene />} */}
+      <RunnerCanvas />
     </>
   );
 }

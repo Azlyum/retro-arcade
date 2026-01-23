@@ -119,7 +119,7 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
 
        {name === "RUNNER" &&  (
           <div
-            // onClick={onClick}
+            onClick={onClick}
             className="absolute top-[50%] left-[5%] w-[90%] h-[25%] z-0 cursor-pointer"
           >
             <RunnerScreen />
