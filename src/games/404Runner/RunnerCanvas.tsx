@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useRef, useState } from "react";
-import { getCachedImage } from "../pixel-invaders/utils/imageCache";
+import { platforms } from "./objects/platforms";
 
 export const RunnerCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -13,10 +13,11 @@ export const RunnerCanvas = () => {
   const playerXRef = useRef(playerX);
   const playerYRef = useRef(playerY);
   const playerVyRef = useRef(0);
+  const platformVyRef = useRef(2);
   const keysPressed = useRef<Set<string>>(new Set());
+  const platformsArray = platforms();
 
   const playerImg = new Image();
-  // playerImg.src = require("./assets/player.png");
 
   const drawPlayer = (
     ctx: CanvasRenderingContext2D,
@@ -110,6 +111,32 @@ export const RunnerCanvas = () => {
         playerVyRef.current = 0;
         onGroundRef.current = true;
       }
+
+      platformsArray.forEach((platform) => {
+        if (
+          playerXRef.current + PLAYER_WIDTH > platform.x &&
+          playerXRef.current < platform.x + platform.width &&
+          playerYRef.current + PLAYER_HEIGHT > platform.y &&
+          playerYRef.current + PLAYER_HEIGHT - playerVyRef.current <= platform.y
+        ) {
+          playerYRef.current = platform.y - PLAYER_HEIGHT;
+          playerVyRef.current = 0;
+          onGroundRef.current = true;
+        }
+
+        platform.x -= platformVyRef.current;
+        if (platform.x + platform.width < 0) {
+  platform.x = canvas.width;
+  platform.y = Math.random() * (canvas.height - platform.height);
+}
+        ctx.fillStyle = "#00ff00";
+        ctx.fillRect(
+          platform.x,
+          platform.y,
+          platform.width,
+          platform.height
+        );
+      });
 
       drawPlayer(ctx, playerXRef.current, playerYRef.current);
 
