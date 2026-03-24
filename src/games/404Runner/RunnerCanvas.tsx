@@ -126,16 +126,13 @@ export const RunnerCanvas = () => {
 
         platform.x -= platformVyRef.current;
         if (platform.x + platform.width < 0) {
-  platform.x = canvas.width;
-  platform.y = Math.random() * (canvas.height - platform.height);
-}
+          platform.x = canvas.width;
+          platform.y =
+            Math.random() * (canvas.height - platform.height - PLAYER_HEIGHT);
+        }
+
         ctx.fillStyle = "#00ff00";
-        ctx.fillRect(
-          platform.x,
-          platform.y,
-          platform.width,
-          platform.height
-        );
+        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
       });
 
       drawPlayer(ctx, playerXRef.current, playerYRef.current);
