@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import LandingPage from "./scenes/LandingScene";
 import RetroScene from "./scenes/RetroScene";
 import { useArcadeStore } from "./state/useArcadeStore";
