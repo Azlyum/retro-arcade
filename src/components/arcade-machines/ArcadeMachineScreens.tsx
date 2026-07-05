@@ -59,15 +59,13 @@ export const BugSquashScreen: React.FC = () => {
 
 export const RunnerScreen: React.FC = () => {
   return (
-   <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <div className="relative bottom-6 w-[220px] h-[110px] bg-black p-1 border-2 border-red-900 shadow-neonRed overflow-hidden rounded-xl">
-        <div className="text-red-300">
-          COMING SOON
-        </div>
+        <div className="text-red-300">COMING SOON</div>
       </div>
     </div>
-  )
-} 
+  );
+};
 
 export const ArcadeLandingMachineScreen: React.FC = () => {
   return (
@@ -94,7 +92,6 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
   onClick,
   nameSigns,
 }) => {
-
   return (
     <div id={name} className="absolute" style={style}>
       <div className="relative w-full h-full">
@@ -117,7 +114,7 @@ export const ArcadeMachineScreens: React.FC<ArcadeMachineScreensI> = ({
           </div>
         )}
 
-       {name === "RUNNER" &&  (
+        {name === "RUNNER" && (
           <div
             onClick={onClick}
             className="absolute top-[50%] left-[5%] w-[90%] h-[25%] z-0 cursor-pointer"
