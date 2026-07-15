@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { Bullet } from "./drawBullet";
 import { AudioManager } from "./audioManager";
 import { Enemy } from "./drawEnemies";
@@ -46,7 +46,7 @@ export const usePlayerControls = (
 
   const keysPressed = useRef<Set<string>>(new Set());
 
-  const shootBullet = () => {
+  const shootBullet = useCallback(() => {
     AudioManager.play("shooting");
 
     const width = bigBulletActiveRef.current ? 60 : 30;
@@ -85,7 +85,14 @@ export const usePlayerControls = (
         addBullet(playerXRef.current + 22, 2, bigBulletDamage);
       }
     }
-  };
+  }, [
+    bigBulletActiveRef,
+    bulletsRef,
+    canvasHeight,
+    isBulletSpreadActiveRef,
+    isDoubleShotActiveRef,
+    playerDamageMultiplierRef,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

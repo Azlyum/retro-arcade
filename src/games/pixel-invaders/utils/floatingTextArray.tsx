@@ -44,7 +44,7 @@ export const portfolioFacts = [
   "Boss-Level Dev Energy ⚡👨‍💻",
   "Built with React ⚛️",
   "TypeScript Fan 🧑‍💻",
-  "3+ Years Experience ⏳",
+  "5+ Years Experience ⏳",
   "Redux & Context API 📦",
   "Accessibility First ♿️",
   "Jest & RTL for Testing ✅",
