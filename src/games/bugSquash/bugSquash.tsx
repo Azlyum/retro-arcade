@@ -116,6 +116,19 @@ export default function BugSquash() {
     }, BUG_VISIBLE_MS);
   }, [activeHoleIndex]);
 
+  function handleHolePress(index: number) {
+    handleHoleClick(index);
+  }
+
+  function handleHoleKeyDown(
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    index: number
+  ) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    handleHoleClick(index);
+  }
+
   function handleHoleClick(index: number) {
     if (gameState !== "playing") return;
     if (activeHoleIndex !== index || !activeBug) {
@@ -271,7 +284,10 @@ export default function BugSquash() {
           <span className="text-sm uppercase text-green-300 font-mono">
             SCORE
           </span>
-          <div className="text-2xl font-semibold text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">
+          <div
+            data-testid="score-value"
+            className="text-2xl font-semibold text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]"
+          >
             {score}
           </div>
         </div>
@@ -348,7 +364,8 @@ export default function BugSquash() {
           return (
             <button
               key={i}
-              onClick={() => handleHoleClick(i)}
+              onPointerDown={() => handleHolePress(i)}
+              onKeyDown={(event) => handleHoleKeyDown(event, i)}
               className="relative h-32 w-32 select-none rounded-lg border-2 border-slate-600 bg-slate-900 shadow-[inset_0_-10px_0_0_rgba(0,0,0,0.35)] hover:border-green-400 hover:shadow-[0_0_15px_rgba(34,197,94,0.3)] active:scale-[0.99] transition-all duration-200"
             >
               <div className="absolute inset-x-2 top-2 h-3 rounded-full bg-slate-800/80" />
