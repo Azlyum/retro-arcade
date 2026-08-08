@@ -14,7 +14,8 @@ export const ApiPost = () => {
       }
       const data = await response.json();
 
-      if (clicked !== false) {
+      if (!clicked) {
+        setClicked(true);
         console.log(data);
       }
     } catch (error) {

@@ -20,6 +20,8 @@ import { FloatingText } from "./utils/floatingTextArray";
 import { AudioManager } from "./audioManager";
 import { PowerUp, powerUpIconMap } from "./utils/powerUpUtils";
 import { getCachedImage } from "./utils/imageCache";
+import enemyBulletImgSrc from "./assets/enemyBullet.png";
+import playerBulletImgSrc from "./assets/playerBullet.png";
 
 export const Canvas = ({
   onGameOver,
@@ -65,7 +67,7 @@ export const Canvas = ({
       isPlayerSpeedBoostActiveRef,
       isBulletSpreadActiveRef,
       isAutoFireActiveRef,
-      playerDamageMultiplierRef
+      playerDamageMultiplierRef,
     );
 
   const enemiesRef = useRef<Enemy[]>([]);
@@ -98,14 +100,14 @@ export const Canvas = ({
         playerBulletImageRef.current = playerBulletImg;
       };
       playerBulletImg.onerror = () => {};
-      playerBulletImg.src = require("./assets/playerBullet.png");
+      playerBulletImg.src = playerBulletImgSrc;
 
       const enemyBulletImg = new Image();
       enemyBulletImg.onload = () => {
         enemyBulletImageRef.current = enemyBulletImg;
       };
       enemyBulletImg.onerror = () => {};
-      enemyBulletImg.src = require("./assets/enemyBullet.png");
+      enemyBulletImg.src = enemyBulletImgSrc;
     };
 
     enemyShootingSoundRef.current = null;
@@ -159,7 +161,7 @@ export const Canvas = ({
 
       powerUpsRef.current.push(newPowerUp);
     },
-    [playerXRef]
+    [playerXRef],
   );
 
   useEffect(() => {
@@ -187,7 +189,7 @@ export const Canvas = ({
       permanentDamageBoostsRef.current += 1;
       playerDamageMultiplierRef.current += 0.5;
       const existingDamageBoost = activePowerUpsRef.current.find(
-        (p) => p.power === "damage boost"
+        (p) => p.power === "damage boost",
       );
       if (!existingDamageBoost) {
         activePowerUpsRef.current.push({ power, expiration: Infinity });
@@ -196,7 +198,7 @@ export const Canvas = ({
     }
 
     const existingPowerUp = activePowerUpsRef.current.find(
-      (p) => p.power === power
+      (p) => p.power === power,
     );
 
     const applyPowerUpEffect = (powerType: string) => {
@@ -261,7 +263,7 @@ export const Canvas = ({
       const playerY = canvas.height - 100;
 
       let newX = playerXRef.current;
-      const movementSpeed = isPlayerSpeedBoostActiveRef.current ? 3.5 : 1.8;
+      const movementSpeed = isPlayerSpeedBoostActiveRef.current ? 6.5 : 3.5;
 
       if (
         keysPressed.current.has("ArrowLeft") ||
@@ -340,24 +342,24 @@ export const Canvas = ({
         playerY,
         isFreezeEnemiesActiveRef,
         isSlowMotionActiveRef,
-        waveRef
+        waveRef,
       );
 
       drawBullet(ctx, bulletsRef.current, playerBulletImageRef.current);
       drawEnemyBullets(
         ctx,
         enemyBulletsRef.current,
-        enemyBulletImageRef.current
+        enemyBulletImageRef.current,
       );
 
       bulletsRef.current = updateBullets(
         bulletsRef.current,
-        isSlowMotionActiveRef
+        isSlowMotionActiveRef,
       );
 
       const updatedBullets = updateEnemyBullets(
         enemyBulletsRef.current,
-        isSlowMotionActiveRef
+        isSlowMotionActiveRef,
       );
 
       enemyBulletsRef.current = updatedBullets.slice(0, 5);
@@ -374,7 +376,7 @@ export const Canvas = ({
           explosionsRef.current.push({ x: cx, y: cy, r: 10, life: 18 });
           const mag = intensity * 0.45;
           shakeRef.current = { t: 12, mag, base: mag };
-        }
+        },
       );
 
       const drawPowerUpHUD = (ctx: CanvasRenderingContext2D) => {
@@ -385,7 +387,7 @@ export const Canvas = ({
 
         const now = Date.now();
         const expiredPowerUps = activePowerUpsRef.current.filter(
-          (p) => p.expiration !== Infinity && p.expiration <= now
+          (p) => p.expiration !== Infinity && p.expiration <= now,
         );
 
         expiredPowerUps.forEach((powerUp) => {
@@ -427,7 +429,7 @@ export const Canvas = ({
         });
 
         activePowerUpsRef.current = activePowerUpsRef.current.filter(
-          (p) => p.expiration === Infinity || p.expiration > now
+          (p) => p.expiration === Infinity || p.expiration > now,
         );
 
         activePowerUpsRef.current.forEach((powerUp, i) => {
@@ -445,7 +447,7 @@ export const Canvas = ({
               startX + i * (iconSize + padding),
               startY,
               iconSize,
-              iconSize
+              iconSize,
             );
             ctx.globalAlpha = 1;
           } else {
@@ -455,7 +457,7 @@ export const Canvas = ({
               startX + i * (iconSize + padding),
               startY,
               iconSize,
-              iconSize
+              iconSize,
             );
             ctx.globalAlpha = 1;
 
@@ -464,7 +466,7 @@ export const Canvas = ({
             ctx.fillText(
               powerUp.power,
               startX + i * (iconSize + padding),
-              startY + iconSize + 8
+              startY + iconSize + 8,
             );
           }
         });
@@ -519,13 +521,13 @@ export const Canvas = ({
         f.life -= 1;
       });
       muzzleFlashesRef.current = muzzleFlashesRef.current.filter(
-        (f) => f.life > 0
+        (f) => f.life > 0,
       );
       drawPlayer(
         ctx,
         playerXRef.current,
         canvas.height,
-        isShieldActiveRef.current
+        isShieldActiveRef.current,
       );
       drawPowerUpHUD(ctx);
 
@@ -537,7 +539,7 @@ export const Canvas = ({
         text.lifespan -= 1;
       });
       floatingTextsRef.current = floatingTextsRef.current.filter(
-        (t) => t.lifespan > 0
+        (t) => t.lifespan > 0,
       );
 
       powerUpsRef.current.forEach((power) => {
@@ -589,12 +591,12 @@ export const Canvas = ({
       if (enemiesRef.current.length === 0) {
         enemyFireRateRef.current = Math.max(
           800,
-          2000 - Math.floor(waveRef.current / 3) * 25
+          2000 - Math.floor(waveRef.current / 3) * 25,
         );
         enemiesRef.current = createEnemies(
           3,
           Math.floor(Math.random() * 10 + 1),
-          waveRef.current
+          waveRef.current,
         );
         waveRef.current++;
         lastEnemyShotTimeRef.current = Date.now() + 1000;
@@ -612,11 +614,11 @@ export const Canvas = ({
             playerHitboxX,
             playerHitboxY,
             playerHitboxWidth,
-            playerHitboxHeight
+            playerHitboxHeight,
           );
           isShieldActiveRef.current = false;
           activePowerUpsRef.current = activePowerUpsRef.current.filter(
-            (p) => p.power !== "shield"
+            (p) => p.power !== "shield",
           );
         } else {
           gameOverTriggeredRef.current = true;
@@ -642,7 +644,7 @@ export const Canvas = ({
           if (isShieldActiveRef.current) {
             isShieldActiveRef.current = false;
             activePowerUpsRef.current = activePowerUpsRef.current.filter(
-              (p) => p.power !== "shield"
+              (p) => p.power !== "shield",
             );
           } else {
             const playerDeath = new Howl({
@@ -673,7 +675,7 @@ export const Canvas = ({
         ctx.fillText(
           `DMG: x${playerDamageMultiplierRef.current.toFixed(1)}`,
           720,
-          50
+          50,
         );
       }
 
@@ -691,7 +693,7 @@ export const Canvas = ({
               ctx.fillText(
                 `Damage Boost: x${permanentDamageBoostsRef.current}`,
                 20,
-                effectY
+                effectY,
               );
             } else {
               ctx.fillText(`${powerUp.power}: ACTIVE`, 20, effectY);

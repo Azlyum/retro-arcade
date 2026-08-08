@@ -1,3 +1,10 @@
+import cssBugDamagedSrc from "./assets/css_bug_damaged.png";
+import cssBugSrc from "./assets/css_bug.png";
+import htmlEnemyDamagedSrc from "./assets/html_enemy_damaged.png";
+import htmlEnemySrc from "./assets/html_enemy.png";
+import jsErrorDamagedSrc from "./assets/js_error_damaged.png";
+import jsErrorSrc from "./assets/js_error.png";
+
 const enemyTypes = ["grunt", "tank", "blitz"] as const;
 type EnemyType = (typeof enemyTypes)[number];
 
@@ -14,22 +21,22 @@ export interface Enemy {
 
 const loadImage = (src: string): HTMLImageElement => {
   const img = new Image();
-  img.src = require(`${src}`);
+  img.src = src;
   return img;
 };
 
 const enemySprites = {
   html: {
-    normal: loadImage("./assets/html_enemy.png"),
-    damaged: loadImage("./assets/html_enemy_damaged.png"),
+    normal: loadImage(htmlEnemySrc),
+    damaged: loadImage(htmlEnemyDamagedSrc),
   },
   css: {
-    normal: loadImage("./assets/css_bug.png"),
-    damaged: loadImage("./assets/css_bug_damaged.png"),
+    normal: loadImage(cssBugSrc),
+    damaged: loadImage(cssBugDamagedSrc),
   },
   js: {
-    normal: loadImage("./assets/js_error.png"),
-    damaged: loadImage("./assets/js_error_damaged.png"),
+    normal: loadImage(jsErrorSrc),
+    damaged: loadImage(jsErrorDamagedSrc),
   },
 };
 
